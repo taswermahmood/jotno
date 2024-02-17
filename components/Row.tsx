@@ -1,4 +1,3 @@
-import { WIDTH } from "@/constants";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 export const Row = ({
@@ -14,6 +13,5 @@ export const Row = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    width: "100%"
   },
 });

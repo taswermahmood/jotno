@@ -4,20 +4,18 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { theme} from "@/theme";
+import { theme } from "@/theme";
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, Layout, Text } from '@ui-kitten/components';
-
+import { ApplicationProvider } from '@ui-kitten/components';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useColorScheme } from '@/components/useColorScheme';
 
 export {
-  // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from 'expo-router';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: 'tabs/HomeScreen',
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -49,15 +47,18 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-
+  const queryClient = new QueryClient();
   return (
-    <ApplicationProvider {...eva} theme={theme}>
-    <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="searchModal" options={{ presentation: 'modal' }} />
-      </Stack>
-    </ThemeProvider>
-    </ApplicationProvider>
+    <QueryClientProvider client={queryClient}>
+      <ApplicationProvider {...eva} theme={theme}>
+        <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="tabs" options={{ headerShown: false }} />
+            <Stack.Screen name="screens/SearchResults" options={{ presentation: 'modal', headerShown: false }} />
+            <Stack.Screen name="screens/FindJotno" options={{ presentation: 'modal', headerShown: false }} />
+          </Stack>
+        </ThemeProvider>
+      </ApplicationProvider>
+    </QueryClientProvider>
   );
 }

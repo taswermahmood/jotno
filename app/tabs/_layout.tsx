@@ -9,9 +9,8 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
   color: string;
 }) {
-  return <MaterialCommunityIcons size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <MaterialCommunityIcons size={30} style={{ marginBottom: -3 }} {...props} />;
 }
-
 
 export default function TabLayout() {
 
@@ -22,40 +21,29 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
       <Tabs.Screen
-        name="home"
+        name="HomeScreen"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          headerRight: () => (
-            <Link href="/searchModal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <TabBarIcon
-                    name="information"
-                    color='pink'
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          headerTitle: "Jotno",
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />
         }}
       />
       <Tabs.Screen
-        name="inbox"
+        name="InboxScreen"
         options={{
           title: 'Inbox',
           tabBarIcon: ({ color }) => <TabBarIcon name="message-text" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="jobs"
+        name="JobsScreen"
         options={{
           title: 'Jobs',
           tabBarIcon: ({ color }) => <TabBarIcon name="calendar-text" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="account"
+        name="AccountScreen"
         options={{
           title: 'Account',
           tabBarIcon: ({ color }) => <TabBarIcon name="account" color={color} />,

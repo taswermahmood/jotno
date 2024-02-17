@@ -2,29 +2,28 @@ import { StyleSheet, View, Dimensions, Image, FlatList, ViewStyle } from 'react-
 import { Text, Button } from '@ui-kitten/components';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme } from "@/theme";
-import { Property } from '@/types/property';
+import { Profile } from '@/types/profile';
 import { Row } from '@/components/Row';
 import { Column } from '@/components/Column';
-import { LISTMARGIN, WIDTH } from '@/constants';
-import { Size } from '@ui-kitten/components/devsupport';
+import { BORDER_RADIUS } from '@/constants';
 
 export const Card = (
-  { property, style }:
-    { property: Property, style?: ViewStyle }
+  { profile, style }:
+    { profile: Profile, style?: ViewStyle }
 ) => {
-  return <Row style={[styles.container, { flex: 1 }]}>
-    <Image source={{ uri: property.image }} style={styles.image} />
+  return <Row key={profile.id} style={[styles.container]}>
+    <Image source={{ uri: profile.avatar }} style={styles.image} />
     <Column style={{ flex: 1 }}>
       <Row style={{ justifyContent: "space-between" }}>
         <Column style={[styles.defaultPadding]}>
-          <Text category='s1'> {property.firstName}, {property.lastName}</Text>
-          <Text category='c1'> {property.location}</Text>
-          <Text category='c1'> {property.experience} years experience</Text>
+          <Text category='s1'> {profile.firstName}, {profile.lastName}</Text>
+          <Text category='c1'> {profile.location}</Text>
+          <Text category='c1'> {profile.experience} years experience</Text>
         </Column>
         <Column style={[styles.defaultPadding, { alignItems: "flex-end", flex: 1 }]}>
           <Text category='c1'> starting from</Text>
-          <Text category='h6'> {property.wage} {property.currency}</Text>
-          <Text category='c1'> {property.wageFrequency}</Text>
+          <Text category='h6'> {profile.wage} {profile.currency}</Text>
+          <Text category='c1'> {profile.wageFrequency}</Text>
         </Column>
       </Row>
       <Row style={{alignItems: "center", justifyContent:"flex-end"}}>
@@ -46,23 +45,26 @@ const styles = StyleSheet.create({
   button: {
     margin: 5,
     width: 100,
-    height: "50%",
     borderColor: theme["color-primary-500"],
-    borderRadius: 15
+    borderRadius: BORDER_RADIUS
   },
   defaultPadding: {
     padding: 10
   },
   image: {
-    height: 120,
-    width: 120,
-    borderRadius: 15
+    margin: 5,
+    height: 100,
+    width: 100,
+    borderRadius: BORDER_RADIUS,
+    alignSelf: 'center'
   },
   container: {
+    borderRadius: BORDER_RADIUS,
     marginVertical: 5,
+    paddingBottom:5,
     width: "100%",
-    borderRadius: 15,
+    backgroundColor: "#fff",
     borderColor: theme["color-primary-300"],
-    borderWidth:1
+    borderBottomWidth:1
   }
 });

@@ -1,6 +1,7 @@
+import { LISTMARGIN } from "@/constants";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
-export const Column = ({
+export const ScreenView = ({
   children,
   style,
 }: {
@@ -12,6 +13,8 @@ export const Column = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "column",
+    marginTop: 50,
+    marginHorizontal: LISTMARGIN, 
+    flex: 1
   },
 });

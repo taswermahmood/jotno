@@ -11,7 +11,7 @@ import {
   import { useState, useRef } from "react";
   import { Text } from "@ui-kitten/components";
   
-  import { WIDTH } from "../constants";
+  import { BORDER_RADIUS, WIDTH } from "../constants";
   import { theme } from "@/theme";
   
   export const ImageCarousel = ({
@@ -183,7 +183,7 @@ import {
       backgroundColor: "rgba(0, 0, 0, 0.7)", // use this to give the black background opacity but not the text
       paddingVertical: 3,
       paddingHorizontal: 10,
-      borderRadius: 30,
+      borderRadius: BORDER_RADIUS,
     },
     indexText: { color: "#fff" },
     x: {
@@ -191,7 +191,7 @@ import {
       top: 5,
       right: 5,
       backgroundColor: "#fff",
-      borderRadius: 30,
+      borderRadius: BORDER_RADIUS,
       padding: 10,
       zIndex: 10,
       shadowColor: "#000",

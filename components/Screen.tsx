@@ -1,8 +1,8 @@
-import { SafeAreaView, StyleSheet, ViewStyle, Platform, StatusBar } from "react-native"
+import { SafeAreaView, StyleSheet, ViewStyle, StatusBar } from "react-native"
 
 export const Screen = ({
     children,
-    style
+    style,
 }: {
     children: any;
     style?: ViewStyle
@@ -13,7 +13,6 @@ export const Screen = ({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#fff",
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        backgroundColor: "#fff"
     },
 })

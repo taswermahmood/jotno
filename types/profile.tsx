@@ -1,6 +1,6 @@
-export type Property = {
+export type Profile = {
         id: number;
-        image: string;
+        avatar: string;
         firstName: string;
         lastName: string;
         location: string;
@@ -10,4 +10,6 @@ export type Property = {
         currency: string;
         favorite: boolean;
         tag: string[];
+        lat: number;
+        lon: number
 }
