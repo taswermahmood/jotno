@@ -5,14 +5,14 @@ import { theme } from "@/theme";
 import { useState } from 'react';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { getSuggestedLocations } from "@/services/location";
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from 'react-query';
 
 import { Location } from '@/types/location';
 import { getFormattedLocationText } from '@/utils/getFormattedLocationText';
 import { ScreenView } from '@/components/ScreenView';
 import { CurrentLocationButton } from '@/components/CurrentLocationButton';
 import { RecentSearchList } from '@/components/RecentSearchList';
-import { ModalHeader } from '@/components/ModalHeaders';
+import { GoBackRoute } from '@/components/GoBackRoute';
 import { Screen } from "@/components/Screen";
 import { Row } from '@/components/Row';
 import { BORDER_RADIUS } from '@/constants';
@@ -107,7 +107,7 @@ export default function FindJotnoScreen() {
 
     return (
         <Screen>
-            {Platform.OS === "ios" ? <ModalHeader /> : null}
+            <GoBackRoute/>
             <ScreenView style={styles.content}>
                 {getInput()}
                 {suggestions.length > 0 ? (

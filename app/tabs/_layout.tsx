@@ -1,9 +1,10 @@
 import React from 'react';
-import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Redirect, Tabs } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 import { theme } from "@/theme";
 import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useAuth } from '@/hooks/useAuth';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -13,6 +14,11 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  const {user} = useAuth()
+
+  if (!user) {
+    return <Redirect href="/screens/SignUpSignIn" />;
+  }
 
   return (
     <Tabs

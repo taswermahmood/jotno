@@ -11,7 +11,7 @@ export const Card = (
   { profile, style }:
     { profile: Profile, style?: ViewStyle }
 ) => {
-  return <Row key={profile.id} style={[styles.container]}>
+  return <Row key={profile.ID} style={[styles.container]}>
     <Image source={{ uri: profile.avatar }} style={styles.image} />
     <Column style={{ flex: 1 }}>
       <Row style={{ justifyContent: "space-between" }}>

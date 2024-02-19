@@ -6,6 +6,8 @@ import { Divider, Text } from "@ui-kitten/components";
 import { Row } from "./Row";
 import { Search } from "./Search";
 import { Filter } from "./Filter";
+import { useRouter } from "expo-router";
+import { MenuRoute } from "./MenuRoute";
 
 export const AnimatedListHeader = ({
     location,
@@ -18,6 +20,7 @@ export const AnimatedListHeader = ({
         setShowMap: (bool: boolean) => void
     }) => {
 
+    const router = useRouter();
     const mapToggle = () => {
         if (showMap) return setShowMap(false)
         setShowMap(true)
@@ -25,6 +28,7 @@ export const AnimatedListHeader = ({
 
     return <Animated.View style={[styles.container]}>
         <Row>
+            <MenuRoute/>
             <Search location={location} style={styles.grid} />
             <Filter />
         </Row>
@@ -32,7 +36,7 @@ export const AnimatedListHeader = ({
         <Row style={[styles.grid, { justifyContent: "space-between" }]}>
             <Row>
                 <MaterialCommunityIcons name="map-marker" size={18} color={theme["color-primary-500"]} />
-                <Text category="c1" appearance="hint"> {availableSpecialist? availableSpecialist + " Jotno Specialist found" : "Search for Jotno Specialist" }</Text>
+                <Text category="c1" appearance="hint"> {availableSpecialist ? availableSpecialist + " Jotno Specialist found" : "Search for Jotno Specialist"}</Text>
             </Row>
             <Row>
                 <TouchableOpacity onPress={() => console.log("navigate sort")}>

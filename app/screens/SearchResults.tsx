@@ -80,9 +80,9 @@ export default function SearchResultsScreen() {
                 contentContainerStyle={{ paddingTop: HEADERHIGHT }}
                 bounces={false}
                 data={profiles}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.ID.toString()}
                 renderItem={({ item }) => (
-                  <Card key={item.id} profile={item}></Card>
+                  <Card key={item.ID} profile={item}></Card>
                 )}
               />
             </View>

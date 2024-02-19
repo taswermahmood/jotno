@@ -19,7 +19,12 @@ const serverUrl = "http://10.0.0.240:4000/jotno/api"
 const location = "/location"
 const locationEndpoint = serverUrl + location
 
+const user = "/user"
+const userEndpoint = serverUrl + user
+
 export const endpoints = {
     search: locationEndpoint + "/search",
     autocomplete: locationEndpoint + "/autocomplete",
+    register: userEndpoint + "/register",
+    login: userEndpoint + "/login",
 }
