@@ -1,39 +1,52 @@
-import { useRouter } from "expo-router";
-import LottieView from "lottie-react-native";
-import { StyleSheet, View } from "react-native";
-
-import { Logo } from "@/components/Logo";
-import { Row } from "@/components/Row";
-import { Screen } from "@/components/Screen";
+import { Text } from '@ui-kitten/components';
+import { Image, StyleSheet, View } from 'react-native';
 import { useAuth } from "@/hooks/useAuth";
+import { Redirect } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
-const Index = () => {
-    const {user} = useAuth()
-    const router = useRouter();
-    return <>
-        <Screen style={styles.container}>
-            <Row style={{ alignItems: "center" }}>
-                <LottieView
-                    style={styles.lottie}
-                    speed={1}
-                    autoPlay
-                    loop={false}
-                    onAnimationFinish={() => { !user ? router.push("/screens/SignUpSignIn") : router.push("/tabs/HomeScreen") }}
-                    source={require("@/assets/lotties/indexLogo2.json")} />
-                <Logo/>
-            </Row>
-        </Screen>
+import { Screen } from "@/components/Screen";
+import { SignUpAndSignInButton } from '@/components/SignUpAndSignInButton';
+import { theme } from '@/theme';
+import { BORDER_RADIUS } from '@/constants';
+import { ScreenView } from '@/components/ScreenView';
+
+
+export default function SignUpSignIn() {
+    const { t } = useTranslation();
+    const { user } = useAuth()
+    return (<> 
+            {user ? <Redirect href="/tabs/HomeScreen" /> :
+            <Screen style={styles.container} >
+                <ScreenView>
+                    <Image style={{ alignSelf: "center", width: 250, height: 200, margin: 50 }} source={require("@/assets/images/icon.png")} />
+                    <View style={{ position: "absolute", top: "40%" }}>
+                        <Text style={{ color: theme["color-primary-900"] }} category='h1'>{t("Find the care you deserve")}</Text>
+                        <Text style={{ color: theme["color-primary-700"] }} appearance="hint" category='h5'>{t("Pet Care, Elderly Care, Teachers, Housekeeping")}</Text>
+                    </View>
+                </ScreenView>
+                <View style={styles.buttonContainer}>
+                    <SignUpAndSignInButton />
+                </View>
+            </Screen >
+        }
     </>
-};
-export default Index;
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: "space-around", 
-        alignItems: "center"
+        backgroundColor: theme["color-primary-500"],
     },
-    lottie: {
-        height: 120, 
-        width: 120
-    },
+    buttonContainer: {
+        position: "absolute",
+        bottom: 0,
+        backgroundColor: "#fff",
+        borderTopEndRadius: BORDER_RADIUS,
+        borderTopStartRadius: BORDER_RADIUS,
+        width: "100%",
+        height: "25%",
+        justifyContent: "space-evenly"
+    }
 })
+
+

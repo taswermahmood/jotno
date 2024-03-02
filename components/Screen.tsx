@@ -1,4 +1,6 @@
 import { SafeAreaView, StyleSheet, ViewStyle, StatusBar } from "react-native"
+import { Loading } from "./Loading";
+import { useLoading } from "@/hooks/useLoading";
 
 export const Screen = ({
     children,
@@ -7,7 +9,13 @@ export const Screen = ({
     children: any;
     style?: ViewStyle
 }) => {
-    return <SafeAreaView style={[styles.container, style]}><StatusBar barStyle={"dark-content"} />{children}</SafeAreaView>
+    const { loading } = useLoading();
+    return (
+        <SafeAreaView style={[styles.container, style]}>
+            <StatusBar barStyle={"dark-content"} />
+            {loading ? <Loading /> : children}
+        </SafeAreaView>
+    )
 }
 
 const styles = StyleSheet.create({

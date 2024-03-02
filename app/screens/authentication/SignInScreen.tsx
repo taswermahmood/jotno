@@ -5,6 +5,9 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
 import { useMutation } from "react-query";
+import * as Facebook from "expo-auth-session/providers/facebook";
+import * as Google from "expo-auth-session/providers/google";
+import { useTranslation } from "react-i18next";
 
 import { Screen } from "@/components/Screen";
 import { LoginDivider } from "@/components/LoginDivider";
@@ -14,15 +17,28 @@ import { FacebookButton } from "@/components/FacebookButton";
 import { GoBackRoute } from "@/components/GoBackRoute";
 import { PasswordInput } from "@/components/PasswordInput";
 import { BORDER_RADIUS } from "@/constants";
-import { loginUser } from "@/services/user";
+import { facebookLoginRegister, googleLoginRegister, loginUser } from "@/services/user";
 import { useAuth } from "@/hooks/useAuth";
-import { Laoding } from "@/components/Loading";
+import { Loading } from "@/components/Loading";
 
 
 export default function SignInScreen() {
     const router = useRouter();
     const { login } = useAuth();
-    
+    const { t } = useTranslation();
+
+    const [__, ___, fbPromt] = Facebook.useAuthRequest({ clientId: "376557685324796" });
+    const [_, googleResponse, googleAuth] = Google.useAuthRequest({
+        expoClientId:
+            "798634518659-dvr083qo5f16396gncnflha1sq9v065g.apps.googleusercontent.com",
+        iosClientId:
+            "1080382822276-a0ms51p5cfc523bivhchs8nk04u2scq0.apps.googleusercontent.com",
+        androidClientId:
+            "1080382822276-dqohv9donltabnijor1uun2765hstr4v.apps.googleusercontent.com",
+        webClientId: "GOOGLE_GUID.apps.googleusercontent.com",
+        selectAccount: true,
+    });
+
     const nativeLogin = useMutation(
         async (values: { email: string; password: string }) => {
             const user = await loginUser(values.email, values.password);
@@ -33,15 +49,39 @@ export default function SignInScreen() {
         }
     );
 
-    if (nativeLogin.isLoading) return <Laoding/>
+    const facebookLogin = useMutation(async () => {
+        const response = await fbPromt();
+        if (response.type === "success") {
+            const { accessToken } = response.params;
+            const user = await facebookLoginRegister(accessToken);
+            if (user) {
+                login(user);
+                router.back();
+            }
+        }
+    });
 
-    return <KeyboardAwareScrollView bounces={false}>
+    const googleLogin = useMutation(async () => {
+        const response = await googleAuth();
+        if (response.type === "success") {
+            const { accessToken } = response.params;
+            const user = await googleLoginRegister(accessToken);
+            if (user) {
+                login(user);
+                router.back();
+            }
+        }
+    });
+
+    if (nativeLogin.isLoading || facebookLogin.isLoading || googleLogin.isLoading) return <Loading />
+
+    return <KeyboardAwareScrollView bounces={false} style={{ backgroundColor: "#fff" }}>
         <Screen>
             <ScreenView>
                 <GoBackRoute />
                 <View>
                     <Text category={"h5"} style={styles.header}>
-                        Log In
+                        {t("Log In")}
                     </Text>
                     <Formik
                         initialValues={{
@@ -52,7 +92,7 @@ export default function SignInScreen() {
                             email: yup.string().email().required("Please enter your email address."),
                             password: yup.string().required("Please enter your password."),
                         })}
-                        onSubmit={ (values) => {
+                        onSubmit={(values) => {
                             nativeLogin.mutate(values)
                         }}
                     >
@@ -105,7 +145,7 @@ export default function SignInScreen() {
                                         onPress={() => router.push("/screens/authentication/ForgotPasswordScreen")}
                                     >
                                         <Text category={"c1"} status={"info"}>
-                                            Forgot your password?
+                                            {t("Forgot your password?")}
                                         </Text>
                                     </TouchableOpacity>
 
@@ -113,19 +153,19 @@ export default function SignInScreen() {
                                         style={styles.signInButton}
                                         onPress={() => handleSubmit()}
                                     >
-                                        Log In
+                                        {t("Log In")}
                                     </Button>
 
                                     <LoginDivider style={styles.orContainer} />
                                     <GoogleButton
                                         text="Continue with Google"
                                         style={styles.button}
-                                        onPress={() => { console.log("google") }}
+                                        onPress={() => { googleLogin.mutate() }}
                                     />
                                     <FacebookButton
                                         text="Continue with Facebook"
                                         style={styles.button}
-                                        onPress={() => { console.log("google") }}
+                                        onPress={() => { facebookLogin.mutate() }}
                                     />
                                 </>
                             );

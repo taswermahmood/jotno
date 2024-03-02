@@ -17,7 +17,7 @@ export const Search = ({
     return <TouchableOpacity style={[styles.container, style]} onPress={() => navigation.push("/screens/FindJotno")}>
         <Row style={{ alignItems: "center" }}>
             <MaterialCommunityIcons name="magnify" color={theme["color-primary-500"]} size={28} />
-            <Text style={{ marginLeft: 10 }}> {location} </Text>
+            <Text style={{ marginLeft: 10 }}>{location}</Text>
         </Row>
     </TouchableOpacity>
 }

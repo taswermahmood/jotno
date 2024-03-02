@@ -1,15 +1,15 @@
 import { View, StyleSheet, Platform } from "react-native";
 import MapView, { Region, PROVIDER_GOOGLE } from "react-native-maps";
-import { Profile } from "@/types/profile";
+import { Specialist } from "@/types/profiles/specialist";
 import { MapMarker } from "./MapMarker";
 import { useEffect, useState } from "react";
 import { theme } from "@/theme";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { Card } from "./SearchCard";
 import { Modal } from "react-native-paper";
 import { HEADERHIGHT } from "@/constants";
 import { Button } from "@ui-kitten/components";
-import { getProfilesInArea } from "@/types/data";
+import { getSpecialistsInArea } from "@/types/data";
 
 let mapRegion: Region | undefined = undefined;
 
@@ -21,10 +21,10 @@ export const Map = ({
     setLocation,
     setProfiles
 }: {
-    profiles: Profile[];
+    profiles: Specialist[];
     location: string;
     setLocation: (location: string) => void;
-    setProfiles: (profile: Profile[]) => void;
+    setProfiles: (profile: Specialist[]) => void;
     mapRef?: React.MutableRefObject<MapView | null>
     initialRegion?: Region | undefined;
 }) => {
@@ -56,7 +56,7 @@ export const Map = ({
         if (Platform.OS === "android") unFocusProperty();
     };
     const handleSearchAreaButtonPress = () => {
-        setProfiles(getProfilesInArea(boundingBox))
+        setProfiles(getSpecialistsInArea(boundingBox))
         setLocation("Map Area");
         mapRegion = region;
         setShowSearchAreaButton(false);
@@ -119,13 +119,13 @@ export const Map = ({
                     lon={i.lon}
                     onPress={() => handleMarkerPress(index)}
                     color={activeIndex === index ?
-                        theme["color-primary-900"] : theme["color-info-600"]} />
+                        theme["color-primary-700"] : theme["color-info-500"]} />
             ),
             )}
         </MapView>
         {activeIndex > -1 && (
             <Modal visible={showModal} onDismiss={unFocusProperty} contentContainerStyle={styles.card}>
-                <Card key={profiles[activeIndex].id} profile={profiles[activeIndex]} />
+                <Card key={profiles[activeIndex].ID} profile={profiles[activeIndex]} onPress={() => { router.push({ pathname: "/screens/SpecialistDetails", params: { specialistID: profiles[activeIndex].ID } }) }} />
             </Modal>
         )}
         {showSearchAreaButton && activeIndex === -1 && (

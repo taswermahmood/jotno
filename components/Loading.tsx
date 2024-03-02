@@ -1,27 +1,28 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import LottieView from "lottie-react-native";
 
-import { Screen } from "./Screen";
-
-export const Laoding = () => {
-    return <Screen style={styles.container}>
-        <LottieView
-            style={styles.lottie}
-            autoPlay
-            speed={3}
-            source={require("@/assets/lotties/loading.json")} 
-        />
-    </Screen>
+export const Loading = () => {
+    return (
+        <View style={styles.container}>
+            <LottieView
+                style={styles.lottie}
+                autoPlay
+                speed={1}
+                source={require("@/assets/lotties/loading.json")}
+            />
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        height: Dimensions.get("screen").height,
+        width: Dimensions.get("screen").width,
         justifyContent: "center",
         alignItems: "center"
     },
     lottie: {
-        height: 250,
-        width: 250
+        height: 200,
+        width: 200
     }
 })

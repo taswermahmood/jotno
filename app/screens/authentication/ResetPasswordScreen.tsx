@@ -10,18 +10,49 @@ import { ScreenView } from "@/components/ScreenView";
 import { PasswordInput } from "@/components/PasswordInput";
 import { useLocalSearchParams } from "expo-router";
 import { GoBackRoute } from "@/components/GoBackRoute";
-import { BORDER_RADIUS } from "@/constants";
+import { BORDER_RADIUS, endpoints } from "@/constants";
+import { useMutation } from "react-query";
+import axios from "axios";
+import { Loading } from "@/components/Loading";
+import { useTranslation } from "react-i18next";
 
 
 export default function ResetPasswordScreen() {
+    const { t } = useTranslation();
     const router = useRouter();
-    const route = useLocalSearchParams();
-    return <KeyboardAwareScrollView bounces={false}>
+    const { token } = useLocalSearchParams();
+
+    const resetPassword = useMutation(
+        async (password: string) => {
+            return axios.post(
+                endpoints.resetPassword,
+                { password },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
+                }
+            )
+        },
+        {
+            onSuccess() {
+                router.push("/screens/authentication/SignInScreen")
+            },
+            onError(error: any) {
+                if (error.response.status === 401)
+                    return alert(error.response.data)
+                alert("Unable to reset password at this time.")
+            },
+        }
+    )
+    if (resetPassword.isLoading) return <Loading />
+
+    return <KeyboardAwareScrollView bounces={false} style={{ backgroundColor: "#fff" }}>
         <Screen>
             <ScreenView>
-                <GoBackRoute/>
+                <GoBackRoute />
                 <Text category={"h5"} style={styles.header}>
-                    Reset Password
+                    {t("Reset Password")}
                 </Text>
                 <Formik
                     initialValues={{
@@ -41,7 +72,7 @@ export default function ResetPasswordScreen() {
                             .oneOf([yup.ref("password"), undefined], "Password does not match")
                             .required("Required"),
                     })}
-                    onSubmit={()=>{}}
+                    onSubmit={(values) => { resetPassword.mutate(values.password) }}
                 >
                     {({
                         values,
@@ -93,7 +124,7 @@ export default function ResetPasswordScreen() {
                                     style={styles.submitButton}
                                     onPress={() => handleSubmit()}
                                 >
-                                    Reset Password
+                                    {t("Reset Password")}
                                 </Button>
                             </>
                         );
@@ -106,11 +137,11 @@ export default function ResetPasswordScreen() {
 const styles = StyleSheet.create({
     header: { textAlign: "center", marginVertical: 20 },
     input: {
-      marginTop: 10,
-      borderRadius: BORDER_RADIUS
+        marginTop: 10,
+        borderRadius: BORDER_RADIUS
     },
-    submitButton: { 
+    submitButton: {
         marginTop: 20,
         borderRadius: BORDER_RADIUS
     },
-  });
+});

@@ -28,7 +28,7 @@ export const AnimatedListHeader = ({
 
     return <Animated.View style={[styles.container]}>
         <Row>
-            <MenuRoute/>
+            <MenuRoute />
             <Search location={location} style={styles.grid} />
             <Filter />
         </Row>
@@ -39,12 +39,6 @@ export const AnimatedListHeader = ({
                 <Text category="c1" appearance="hint"> {availableSpecialist ? availableSpecialist + " Jotno Specialist found" : "Search for Jotno Specialist"}</Text>
             </Row>
             <Row>
-                <TouchableOpacity onPress={() => console.log("navigate sort")}>
-                    <Row>
-                        <MaterialCommunityIcons style={styles.center} name={"sort"} size={18} color={theme["color-primary-500"]} />
-                        <Text style={{ fontWeight: "bold" }} category="c1" appearance="hint"> Sort</Text>
-                    </Row>
-                </TouchableOpacity>
                 {showMap ?
                     <TouchableOpacity onPress={mapToggle}>
                         <Row style={styles.marginLeft}>
@@ -53,12 +47,20 @@ export const AnimatedListHeader = ({
                         </Row>
                     </TouchableOpacity>
                     :
-                    <TouchableOpacity onPress={mapToggle}>
-                        <Row style={styles.marginLeft}>
-                            <MaterialCommunityIcons style={styles.center} name={"map"} size={18} color={theme["color-primary-500"]} />
-                            <Text style={{ fontWeight: "bold" }} category="c1" appearance="hint"> Map</Text>
+                    <><TouchableOpacity onPress={() => console.log("navigate sort")}>
+                        <Row>
+                            <MaterialCommunityIcons style={styles.center} name={"sort"} size={18} color={theme["color-primary-500"]} />
+                            <Text style={{ fontWeight: "bold" }} category="c1" appearance="hint"> Sort</Text>
                         </Row>
-                    </TouchableOpacity>}
+                    </TouchableOpacity>
+                        <TouchableOpacity onPress={mapToggle}>
+                            <Row style={styles.marginLeft}>
+                                <MaterialCommunityIcons style={styles.center} name={"map"} size={18} color={theme["color-primary-500"]} />
+                                <Text style={{ fontWeight: "bold" }} category="c1" appearance="hint"> Map</Text>
+                            </Row>
+                        </TouchableOpacity>
+                    </>
+                }
             </Row>
         </Row>
     </Animated.View>

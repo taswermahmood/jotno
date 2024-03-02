@@ -8,19 +8,23 @@ import { AnimatedListHeader } from '@/components/AnimatedListHeader';
 import { Map } from '@/components/Map';
 import { SearchScreenParams } from '@/types/searchResultsParams';
 import MapView from 'react-native-maps';
-import { useLocalSearchParams } from 'expo-router';
-import { getProfilesInArea } from '@/types/data';
-import { Profile } from '@/types/profile';
+import { router, useLocalSearchParams } from 'expo-router';
+import { getSpecialistsInArea } from '@/types/data';
+import { Specialist } from '@/types/profiles/specialist';
 import { Text } from '@ui-kitten/components';
 import LottieView from "lottie-react-native";
+import { useTranslation } from 'react-i18next';
 
 export default function SearchResultsScreen() {
+
+  const { t } = useTranslation();
+
   const route = useLocalSearchParams<SearchScreenParams>();
 
   const [scrollAnimation] = useState(new Animated.Value(0));
   const [showMap, setShowMap] = useState<boolean>(false)
   const mapRef = useRef<MapView | null>(null)
-  const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [profiles, setProfiles] = useState<Specialist[]>([]);
   const [location, setLocation] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -33,7 +37,7 @@ export default function SearchResultsScreen() {
         Number(bb[3]),
       ];
       setLocation(route.location)
-      setProfiles(getProfilesInArea(BoundingBox))
+      setProfiles(getSpecialistsInArea(BoundingBox))
       mapRef?.current?.animateCamera({
         center: {
           latitude: Number(route.lat),
@@ -51,18 +55,22 @@ export default function SearchResultsScreen() {
         location={route.location ? route.location : "Find Jotno Specialist near"}
         availableSpecialist={profiles ? profiles.length : undefined} />
       {showMap ?
-        <Map 
-          profiles={profiles} 
-          mapRef={mapRef} 
+        <Map
+          profiles={profiles}
+          mapRef={mapRef}
           location={location ? location : "Find Jotno Specialists"}
           setLocation={setLocation}
           setProfiles={setProfiles}
           initialRegion={route.lat ? {
             latitude: Number(route.lat),
             longitude: Number(route.lon),
-            latitudeDelta: 0.5,
-            longitudeDelta: 0.5
-          } : undefined} /> :
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1
+          } : 
+          { latitude: 23.7840395, 
+            longitude: 90.40327833, 
+            latitudeDelta: 0.3, 
+            longitudeDelta: 0.3 }} /> :
         <>
           {profiles.length > 0 ? (
             <View style={styles.horizontalContainer}>
@@ -82,7 +90,7 @@ export default function SearchResultsScreen() {
                 data={profiles}
                 keyExtractor={(item) => item.ID.toString()}
                 renderItem={({ item }) => (
-                  <Card key={item.ID} profile={item}></Card>
+                  <Card key={item.ID} profile={item} onPress={() => { router.push({ pathname: "/screens/SpecialistDetails", params: { specialistID: item.ID } }) }}></Card>
                 )}
               />
             </View>
@@ -90,9 +98,9 @@ export default function SearchResultsScreen() {
             <>
               {route.lat ? (
                 <View style={styles.lottieContainer}>
-                  <Text category={"h6"}>No Jotno Specialist Found</Text>
+                  <Text category={"h6"}>{t("No Jotno Specialist Found")}</Text>
                   <Text appearance={"hint"}>
-                    Please search in a different location.
+                    {t("Please search in a different location.")}
                   </Text>
                 </View>
               ) : (
@@ -103,10 +111,12 @@ export default function SearchResultsScreen() {
                     style={styles.lottie}
                     source={require("@/assets/lotties/searchAnimation.json")}
                   />
-                  <Text category={"h6"}>Begin Your Search</Text>
-                  <Text appearance={"hint"} style={styles.subHeader}>
-                    Find Jotno Specialist anytime and anywhere.
-                  </Text>
+                  <View style={styles.headerContainer}>
+                    <Text category={"h6"}>{t("Begin Your Search")}</Text>
+                    <Text appearance={"hint"} style={styles.subHeader}>
+                      {t("Find Jotno Specialist anytime and anywhere.")}
+                    </Text>
+                  </View>
                 </View>
               )}</>
           }
@@ -128,8 +138,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  lottie: { height: 250, width: 250 },
+  lottie: {
+    height: 250,
+    width: 250
+  },
+  headerContainer: {
+    marginHorizontal: 20,
+    alignItems: "center"
+  },
   subHeader: {
     marginTop: 10,
+    textAlign: "center"
   },
 });

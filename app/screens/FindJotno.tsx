@@ -1,12 +1,11 @@
 import { Text, Input } from '@ui-kitten/components';
 import { useRouter } from "expo-router";
 import { FlatList, Platform, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { theme } from "@/theme";
 import { useState } from 'react';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { getSuggestedLocations } from "@/services/location";
 import { useQueryClient } from 'react-query';
 
+import { theme } from "@/theme";
+import { getSuggestedLocations } from "@/services/location";
 import { Location } from '@/types/location';
 import { getFormattedLocationText } from '@/utils/getFormattedLocationText';
 import { ScreenView } from '@/components/ScreenView';
@@ -89,6 +88,7 @@ export default function FindJotnoScreen() {
     const getInput = () => {
         return (
             <Row style={styles.container}>
+                <GoBackRoute/>
                 <Input
                     keyboardType="default"
                     autoFocus
@@ -100,14 +100,12 @@ export default function FindJotnoScreen() {
                     onSubmitEditing={handleSubmitEditing}
                     style={{ flex: 1, borderRadius: BORDER_RADIUS}}
                 />
-                <MaterialCommunityIcons name="close" color={theme["color-primary-500"]} size={28} onPress={() => router.back()} style={{ padding: 5 }} />
             </Row>
         )
     }
 
     return (
         <Screen>
-            <GoBackRoute/>
             <ScreenView style={styles.content}>
                 {getInput()}
                 {suggestions.length > 0 ? (

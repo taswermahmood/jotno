@@ -7,18 +7,11 @@ export const getFormattedLocationText = (
   let location = "";
   if (type === "search") {
     item = item as SearchLocation;
-    let address = item.address;
     location = item.display_name;
-    if (item.address?.country_code && item.address.country_code == "us") {
-      location = `${address.city}, ${address.state}`;
-      if (address?.road) location = `${address.road}, ${location}`;
-      if (address?.house_number)
-        location = `${address.house_number} ${location}`;
-    }
   } else {
-    location = item.address?.name ? item.address.name : "";
-    if (item.type === "city" && item.address.state)
-      location = `${location}, ${item.address.state}`;
+    location += item.address?.name ? item.address.name : "";
+    location += item.address?.neighbourhood ? ", " + item.address.neighbourhood : "";
+    location += item.address?.city ? ", " + item.address.city : "";
   }
   return location;
 };

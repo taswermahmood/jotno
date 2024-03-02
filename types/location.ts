@@ -26,23 +26,6 @@ export type Location = {
     osm_type: string;
     place_id: string;
     type: string;
-    matchquality: {
-      matchcode: string;
-      matchlevel:
-        | "venue"
-        | "building"
-        | "street"
-        | "neighbourhood"
-        | "island"
-        | "borough"
-        | "city"
-        | "county"
-        | "state"
-        | "country"
-        | "marine"
-        | "postalcode";
-      matchtype: string;
-    };
   };
   
   type Address = {

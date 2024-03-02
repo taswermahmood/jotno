@@ -4,23 +4,13 @@ import { BORDER_RADIUS } from "@/constants";
 import { theme } from "@/theme";
 
 export const Logo = () => {
-    return <View style={styles.logoContainer}>
-        <Text style={styles.logoText} category='h1'>Jotno</Text>
-    </View>
+    return <Text style={styles.logoText} category='h1'>Jotno</Text>
+
 }
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 5,
-        alignSelf: "center",
-    },
-    logoContainer: {
-        backgroundColor: "#fff", 
-        borderRadius: BORDER_RADIUS, 
-        width: "30%", padding: 2
-    },
     logoText: {
-        alignSelf: "center", 
+        alignSelf: "center",
         color: theme["color-primary-900"]
     }
 })

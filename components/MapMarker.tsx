@@ -9,7 +9,7 @@ export const MapMarker = ({
 }:{
     lat: number,
     lon: number,
-    onPress: () => void;
+    onPress?: () => void;
     color: string;
 }) => {
     return <Marker coordinate={{latitude: lat, longitude: lon}} onPress={onPress}>

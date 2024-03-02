@@ -25,10 +25,10 @@ export const CurrentLocationButton = ({ style }: { style?: ViewStyle }) => {
     let lat = location.coords.latitude;
     let lon = location.coords.longitude;
     let boundingBox = [
-      (lat - 0.048).toString(),
-      (lat + 0.048).toString(),
-      (lon - 0.041).toString(),
-      (lon + 0.041).toString(),
+      (lat - 0.058).toString(),
+      (lat + 0.058).toString(),
+      (lon - 0.051).toString(),
+      (lon + 0.051).toString(),
     ];
 
     router.push({
