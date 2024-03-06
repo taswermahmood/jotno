@@ -1,8 +1,8 @@
-import { Dimensions, StatusBar, Platform} from "react-native";
+import { Dimensions, StatusBar, Platform } from "react-native";
 
 // CSS CONSTANTS
 export const LISTMARGIN = 10;
-export const WIDTH = Dimensions.get("screen").width - LISTMARGIN*2
+export const WIDTH = Dimensions.get("screen").width - LISTMARGIN * 2
 export const BORDER_RADIUS = 10;
 
 const baseHeight = 125;
@@ -22,6 +22,9 @@ const locationEndpoint = serverUrl + location
 
 const user = "/user"
 const userEndpoint = serverUrl + user
+const favoriteEndpoint = (id: number) => `${userEndpoint}/${id}/specialist/favorited`;
+const pushTokenEndpoint = (id: number) => `${userEndpoint}/${id}/pushToken`;
+const allowsNotificationsEndpoint = (id: number) => `${userEndpoint}/${id}/settings/notifications`;
 
 const jobPost = "/jobPost"
 const jobPostEndpoint = serverUrl + jobPost
@@ -40,13 +43,26 @@ export const endpoints = {
     forgotPassword: userEndpoint + "/forgotPassword",
     resetPassword: userEndpoint + "/resetPassword",
     updateUserInformation: userEndpoint + "/updateUserInformation",
+    getFavorites: favoriteEndpoint,
+    alterFavorites: favoriteEndpoint,
+    alterPushToken: pushTokenEndpoint,
+    allowNotifications: allowsNotificationsEndpoint,
 
     getJobPostsById: jobPostEndpoint + "/getJobPostsById/",
     createJobPosts: jobPostEndpoint + "/createJobPosts",
     deleteJobPost: jobPostEndpoint + "/jobPost/",
 
     getSpecialistById: specialistEndpoint + "/getSpecialistById/",
+    getSpecialistByBoundingBox: specialistEndpoint + "/search",
 }
 
 // APP ID
 export const FACEBOOK_APP_ID = "376557685324796"
+
+export const queryKeys = {
+    recentSearches: "recentSearches",
+    myJobPosts: "myJobPosts",
+    selectedSpecialist: "selectedSpecialist",
+    searchedSpecialists: "searchedSpecialists",
+    favorited: "favorited"
+}

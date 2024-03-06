@@ -17,6 +17,7 @@ import {
   export const ImageCarousel = ({
     images,
     onImagePress,
+    avatar,
     chevronsShown,
     indexShown,
     xShown,
@@ -27,6 +28,7 @@ import {
   }: {
     images: string[];
     onImagePress?: () => void;
+    avatar: string;
     chevronsShown?: boolean;
     indexShown?: boolean;
     xShown?: boolean;
@@ -118,7 +120,7 @@ import {
         ) : (
           <Pressable onPress={onImagePress}>
             <Image
-              source={{uri: ""}}
+              source={{uri: avatar}}
               style={[styles.image, imageStyle]}
             />
           </Pressable>
@@ -157,7 +159,7 @@ import {
         {indexShown && (
           <View style={styles.index}>
             <Text category={"c2"} style={styles.indexText}>
-              {activeIndex + 1} of {images.length} photos
+              {images && images.length > 0? activeIndex + 1 + " of " + images.length + "photos" : "No photos found"}
             </Text>
           </View>
         )}

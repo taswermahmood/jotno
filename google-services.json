@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "798634518659",
+    "project_id": "jotno-414817",
+    "storage_bucket": "jotno-414817.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798634518659:android:fd7bb20b378bc7af7793b6",
+        "android_client_info": {
+          "package_name": "com.taswermahmood.jotno"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798634518659-dvr083qo5f16396gncnflha1sq9v065g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2bw30kYcQdWMY6_TMCCD1OU443Ja09gM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "798634518659-dvr083qo5f16396gncnflha1sq9v065g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

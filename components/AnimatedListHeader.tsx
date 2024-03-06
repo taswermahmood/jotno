@@ -1,26 +1,26 @@
 import { BORDER_RADIUS, HEADERHIGHT, LISTMARGIN } from "@/constants";
 import { Animated, StyleSheet, TouchableOpacity, } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { theme } from "@/theme";
 import { Divider, Text } from "@ui-kitten/components";
+
+import { theme } from "@/theme";
 import { Row } from "./Row";
 import { Search } from "./Search";
 import { Filter } from "./Filter";
-import { useRouter } from "expo-router";
 import { MenuRoute } from "./MenuRoute";
 
 export const AnimatedListHeader = ({
+    jobName,
     location,
     setShowMap,
     availableSpecialist,
     showMap }: {
+        jobName: string | string [],
         showMap: boolean,
         location: string,
         availableSpecialist?: number,
         setShowMap: (bool: boolean) => void
     }) => {
-
-    const router = useRouter();
     const mapToggle = () => {
         if (showMap) return setShowMap(false)
         setShowMap(true)
@@ -29,7 +29,7 @@ export const AnimatedListHeader = ({
     return <Animated.View style={[styles.container]}>
         <Row>
             <MenuRoute />
-            <Search location={location} style={styles.grid} />
+            <Search jobName={jobName} location={location} style={styles.grid} />
             <Filter />
         </Row>
         <Divider style={{ backgroundColor: theme["color-gray"], marginTop: 10, marginBottom: 10 }}></Divider>

@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { View, StyleSheet, ViewStyle } from "react-native";
 import { Button, Text } from "@ui-kitten/components";
-import { useRouter } from "expo-router";
+import { Avatar } from 'react-native-paper';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import { Review } from "@/types/profiles/review";
 import { Row } from "../Row";
 import { theme } from "@/theme";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { BORDER_RADIUS } from "@/constants";
+import { getFormattedDate } from "@/utils/getFormatedDate";
 
 export const SpecialistsReview = ({
     reviews,
@@ -16,32 +18,34 @@ export const SpecialistsReview = ({
     style?: ViewStyle;
 }) => {
     const [showMore, setShowMore] = useState(false);
-    const router = useRouter();
-
     const handleButtonPress = () => setShowMore(!showMore);
 
     const showReviews = (item: Review) => {
-        return (<View key={item.ID} style={styles.viewContainer}>
-            <Row style={{ margin: 5, justifyContent: "space-between" }}>
-                <Text category='s1' style={{ fontWeight: "bold" }}>
-                    {item.creatorFirstName} {item.creatorLastName}
-                </Text>
-                <Text category='s1' appearance="hint" style={{ marginLeft: 5 }}>
-                    {item.CreatedAt}
-                </Text>
-            </Row>
-            <Row style={{ margin: 5, justifyContent: "space-between" }}>
-                <Text category='s1' style={{ fontWeight: "bold" }}>
-                    {item.title}
-                </Text>
-                <Row>
-                    {getStarsIcons(item)}
+        return (
+            <View key={item.ID} style={styles.viewContainer}>
+                <Row style={{ margin: 5, justifyContent: "space-between" }}>
+                    <Row>
+                        <Avatar.Text size={24} label={item.firstName[0] + item.lastName[0]} />
+                        <Text category='s1' style={{ marginLeft: 10 }}>
+                            {item.firstName} {item.lastName}
+                        </Text>
+                    </Row>
+                    <Text category='s1' appearance="hint">
+                        {getFormattedDate(item.CreatedAt)}
+                    </Text>
                 </Row>
-            </Row>
-            <Text category='s1' style={{ marginHorizontal: 5 }}>
-                {item.body}
-            </Text>
-        </View>)
+                <Row style={{ margin: 5, justifyContent: "space-between" }}>
+                    <Text category='s1' style={{ fontWeight: "bold" }}>
+                        {item.title}
+                    </Text>
+                    <Row>
+                        {getStarsIcons(item)}
+                    </Row>
+                </Row>
+                <Text category='s1' style={{ marginHorizontal: 5 }}>
+                    {item.body}
+                </Text>
+            </View>)
     }
 
     const getStarsIcons = (item: Review) => {
@@ -67,7 +71,6 @@ export const SpecialistsReview = ({
 
     const getList = () => {
         if (!reviews || reviews.length === 0) return;
-
         if (reviews.length > 2 && !showMore)
             return (
                 <>
@@ -100,10 +103,10 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: BORDER_RADIUS
     },
-    recentSearchButton: { 
-        marginVertical: 5 
+    recentSearchButton: {
+        marginVertical: 5
     },
-    showButton: { 
-        alignSelf: "flex-end" 
+    showButton: {
+        alignSelf: "flex-end"
     },
 });

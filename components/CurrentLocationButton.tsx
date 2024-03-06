@@ -7,7 +7,16 @@ import * as Location from "expo-location";
 import { Row } from "./Row";
 import { theme } from "../theme";
 
-export const CurrentLocationButton = ({ style }: { style?: ViewStyle }) => {
+export const CurrentLocationButton = (
+  { 
+    jobName,
+    style 
+  }
+  : 
+  { 
+    jobName: string | string [];
+    style?: ViewStyle 
+  }) => {
   const router = useRouter();
 
   const getLocation = async () => {
@@ -33,6 +42,7 @@ export const CurrentLocationButton = ({ style }: { style?: ViewStyle }) => {
 
     router.push({
         pathname: "/screens/SearchResults", params: {
+            jobName: jobName,
             location: "Jotno Specialist near you",
             lat: lat.toString(),
             lon: lon.toString(),

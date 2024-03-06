@@ -1,6 +1,6 @@
 import { Text, Input } from '@ui-kitten/components';
-import { useRouter } from "expo-router";
-import { FlatList, Platform, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { FlatList, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { useQueryClient } from 'react-query';
 
@@ -14,18 +14,19 @@ import { RecentSearchList } from '@/components/RecentSearchList';
 import { GoBackRoute } from '@/components/GoBackRoute';
 import { Screen } from "@/components/Screen";
 import { Row } from '@/components/Row';
-import { BORDER_RADIUS } from '@/constants';
+import { BORDER_RADIUS, queryKeys } from '@/constants';
 
 export default function FindJotnoScreen() {
+    const { jobName } = useLocalSearchParams();
     const [value, setValue] = useState("");
     const router = useRouter();
     const [suggestions, setSuggestions] = useState<Location[]>([])
     const queryClient = useQueryClient();
 
-    const recentSearches: Location[] | undefined = queryClient.getQueryData("recentSearches");
-    
+    const recentSearches: Location[] | undefined = queryClient.getQueryData(queryKeys.recentSearches);
+
     const setRecentSearch = (location: Location) => {
-        queryClient.setQueryData("recentSearches", () => {
+        queryClient.setQueryData(queryKeys.recentSearches, () => {
             if (recentSearches) {
                 let included = false;
                 for (let i of recentSearches) {
@@ -77,6 +78,7 @@ export default function FindJotnoScreen() {
         setRecentSearch(location);
         router.push({
             pathname: "/screens/SearchResults", params: {
+                jobName: jobName,
                 location: getFormattedLocationText(location, "autocomplete"),
                 lat: location.lat,
                 lon: location.lon,
@@ -88,7 +90,7 @@ export default function FindJotnoScreen() {
     const getInput = () => {
         return (
             <Row style={styles.container}>
-                <GoBackRoute/>
+                <GoBackRoute />
                 <Input
                     keyboardType="default"
                     autoFocus
@@ -98,7 +100,7 @@ export default function FindJotnoScreen() {
                     value={value}
                     onChangeText={handleChange}
                     onSubmitEditing={handleSubmitEditing}
-                    style={{ flex: 1, borderRadius: BORDER_RADIUS}}
+                    style={{ flex: 1, borderRadius: BORDER_RADIUS }}
                 />
             </Row>
         )
@@ -124,10 +126,11 @@ export default function FindJotnoScreen() {
                         )}
                     />
                 ) : <ScrollView bounces={false}>
-                    <CurrentLocationButton style={styles.currentLocationButton} />
+                    <CurrentLocationButton jobName={jobName} style={styles.currentLocationButton} />
                     <RecentSearchList
                         style={styles.recentSearchContainer}
                         recentSearches={recentSearches}
+                        jobName={jobName}
                     />
                 </ScrollView>}
             </ScreenView>

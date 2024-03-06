@@ -1,46 +1,47 @@
 import { StyleSheet, Image, ViewStyle, Pressable } from 'react-native';
 import { Text, Button, Divider } from '@ui-kitten/components';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { theme } from "@/theme";
 import { Specialist } from '@/types/profiles/specialist';
 import { Row } from '@/components/Row';
 import { Column } from '@/components/Column';
 import { BORDER_RADIUS } from '@/constants';
+import { camelCaseToWords } from '@/utils/handleCase';
+import { FavoriteIcon } from './FavoriteIcon';
 
 export const Card = (
   {
-    profile,
+    specialist,
     style,
     onPress,
   }:
     {
-      profile: Specialist,
+      specialist: Specialist,
       style?: ViewStyle,
       onPress?: () => void
     }
 ) => {
-  return <Pressable key={profile.ID} onPress={onPress}>
+  if (specialist) return <Pressable onPress={onPress}>
     <Row style={[styles.container]}>
-      <Image source={{ uri: profile.avatar }} style={styles.image} />
-      <Column style={{ flex: 1 }}>
+      <Image source={{ uri: specialist.avatar }} style={styles.image} />
+      <Column style={{ flex: 1, justifyContent: "space-between" }}>
         <Row style={{ justifyContent: "space-between" }}>
-          <Column style={[styles.defaultPadding]}>
-            <Text category='s1'> {profile.firstName}, {profile.lastName}</Text>
-            <Text category='c1'> {profile.location}</Text>
-            <Text category='c1'> {profile.experience} years experience</Text>
-            <Text category='c1'> {profile.jobs[0].frequencies[0].workTypes.join(', ')}</Text>
+          <Column style={[styles.defaultPadding, { alignSelf: 'center' }]}>
+            <Text category='s1'> {specialist.firstName}, {specialist.lastName}</Text>
+            {specialist.location ? <Text category='c1'> {specialist.location}</Text> : null}
+            <Text category='c1'> {specialist.experience == 0 ? "New Jotno Specialist" : specialist.experience + "years experience"}</Text>
+            {specialist.jobs.length > 0 ? <Text category='c1'> {specialist.jobs[0].frequencies[0].workTypes.join(', ')}</Text> : null}
           </Column>
-          <Column style={[styles.defaultPadding, { alignItems: "flex-end", flex: 1 }]}>
+          {specialist.jobs.length > 0 ? <Column style={[styles.defaultPadding, { alignItems: "flex-end", flex: 1 }]}>
             <Text category='c1'> starting from</Text>
-            <Text style={{ fontWeight: "bold" }} category='s1'> {profile.jobs[0].frequencies[0].wagePerType} {profile.jobs[0].frequencies[0].name}</Text>
+            <Text style={{ fontWeight: "bold" }} category='s1'> {specialist.jobs[0].frequencies?.[0].wagePerType} {camelCaseToWords(specialist.jobs[0].frequencies?.[0].name)}</Text>
             <Divider style={styles.divider} />
-            <Text style={{ fontWeight: "bold" }} category='s1'> {profile.jobs[0].frequencies[1].wagePerType} {profile.jobs[0].frequencies[1].name}</Text>
-            <Text category='c1'> per {profile.jobs[0].frequencies[0].keyWord}</Text>
-          </Column>
+            <Text style={{ fontWeight: "bold" }} category='s1'> {specialist.jobs[0].frequencies?.[1]?.wagePerType} {camelCaseToWords(specialist.jobs[0].frequencies?.[1].name)}</Text>
+            <Text category='c1'> per {specialist.jobs[0].frequencies?.[0].keyWord}</Text>
+          </Column> : null}
         </Row>
         <Row style={{ alignItems: "center", justifyContent: "flex-end" }}>
-          <MaterialCommunityIcons style={{ alignContent: "flex-end" }} name="heart-outline" color={theme["color-primary-500"]} size={24} />
+          <FavoriteIcon specialist={specialist} size={24} />
           <Button
             style={styles.button}
             appearance='filled'
@@ -58,6 +59,7 @@ export const Card = (
 const styles = StyleSheet.create({
   button: {
     margin: 5,
+    marginLeft: 10,
     width: 100,
     borderColor: theme["color-primary-500"],
     borderRadius: BORDER_RADIUS

@@ -4,9 +4,6 @@ import { Text, Input, Button } from "@ui-kitten/components";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { useRouter } from "expo-router";
-import { useMutation } from "react-query";
-import * as Facebook from "expo-auth-session/providers/facebook";
-import * as Google from "expo-auth-session/providers/google";
 import { useTranslation } from "react-i18next";
 
 import { Screen } from "@/components/Screen";
@@ -17,63 +14,13 @@ import { FacebookButton } from "@/components/FacebookButton";
 import { GoBackRoute } from "@/components/GoBackRoute";
 import { PasswordInput } from "@/components/PasswordInput";
 import { BORDER_RADIUS } from "@/constants";
-import { facebookLoginRegister, googleLoginRegister, loginUser } from "@/services/user";
 import { useAuth } from "@/hooks/useAuth";
-import { Loading } from "@/components/Loading";
 
 
 export default function SignInScreen() {
     const router = useRouter();
-    const { login } = useAuth();
     const { t } = useTranslation();
-
-    const [__, ___, fbPromt] = Facebook.useAuthRequest({ clientId: "376557685324796" });
-    const [_, googleResponse, googleAuth] = Google.useAuthRequest({
-        expoClientId:
-            "798634518659-dvr083qo5f16396gncnflha1sq9v065g.apps.googleusercontent.com",
-        iosClientId:
-            "1080382822276-a0ms51p5cfc523bivhchs8nk04u2scq0.apps.googleusercontent.com",
-        androidClientId:
-            "1080382822276-dqohv9donltabnijor1uun2765hstr4v.apps.googleusercontent.com",
-        webClientId: "GOOGLE_GUID.apps.googleusercontent.com",
-        selectAccount: true,
-    });
-
-    const nativeLogin = useMutation(
-        async (values: { email: string; password: string }) => {
-            const user = await loginUser(values.email, values.password);
-            if (user) {
-                login(user);
-                router.back();
-            }
-        }
-    );
-
-    const facebookLogin = useMutation(async () => {
-        const response = await fbPromt();
-        if (response.type === "success") {
-            const { accessToken } = response.params;
-            const user = await facebookLoginRegister(accessToken);
-            if (user) {
-                login(user);
-                router.back();
-            }
-        }
-    });
-
-    const googleLogin = useMutation(async () => {
-        const response = await googleAuth();
-        if (response.type === "success") {
-            const { accessToken } = response.params;
-            const user = await googleLoginRegister(accessToken);
-            if (user) {
-                login(user);
-                router.back();
-            }
-        }
-    });
-
-    if (nativeLogin.isLoading || facebookLogin.isLoading || googleLogin.isLoading) return <Loading />
+    const { nativeLogin, facebookAuth, googleAuth } = useAuth()
 
     return <KeyboardAwareScrollView bounces={false} style={{ backgroundColor: "#fff" }}>
         <Screen>
@@ -92,8 +39,8 @@ export default function SignInScreen() {
                             email: yup.string().email().required("Please enter your email address."),
                             password: yup.string().required("Please enter your password."),
                         })}
-                        onSubmit={(values) => {
-                            nativeLogin.mutate(values)
+                        onSubmit={async (values) => {
+                            await nativeLogin(values)
                         }}
                     >
                         {({
@@ -160,12 +107,12 @@ export default function SignInScreen() {
                                     <GoogleButton
                                         text="Continue with Google"
                                         style={styles.button}
-                                        onPress={() => { googleLogin.mutate() }}
+                                        onPress={async () => { await googleAuth() }}
                                     />
                                     <FacebookButton
                                         text="Continue with Facebook"
                                         style={styles.button}
-                                        onPress={() => { facebookLogin.mutate() }}
+                                        onPress={async () => { await facebookAuth() }}
                                     />
                                 </>
                             );

@@ -1,29 +1,25 @@
 import { Button, Input } from '@ui-kitten/components';
-import { FlatList, Image, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import * as ImagePicker from "expo-image-picker";
 import * as yup from "yup";
 import { Formik } from 'formik';
 import { Avatar } from 'react-native-paper';
+import { useState } from 'react';
+import { useMutation } from 'react-query';
+import { router } from 'expo-router';
 
-import { useAuth } from '@/hooks/useAuth';
+import { useUser } from '@/hooks/useUser';
 import { ScreenView } from '@/components/ScreenView';
 import { GoBackRoute } from '@/components/GoBackRoute';
 import { Screen } from "@/components/Screen";
-import { BORDER_RADIUS, endpoints } from '@/constants';
-import { useState } from 'react';
-import { router } from 'expo-router';
-import { useMutation } from 'react-query';
-import axios from 'axios';
+import { BORDER_RADIUS } from '@/constants';
 import { Loading } from '@/components/Loading';
 import { updateInformation } from '@/services/user';
 import { Row } from '@/components/Row';
-import SignUpSignIn from '@/app';
-import { useLoading } from '@/hooks/useLoading';
 
 
 export default function AccountInformation() {
-    let { user } = useAuth();
-    const {setLoading} = useLoading();
+    let { user } = useUser();
     const [editProfile, setEditProfile] = useState(false);
     const [imageURI, setImageURI] = useState(user ? user.avatar : "");
 
@@ -60,7 +56,6 @@ export default function AccountInformation() {
 
     if (updateUserInformation.isLoading) return <Loading />
 
-    if (!user) return <SignUpSignIn />
     return (<Screen>
         {user ? <ScreenView>
             <GoBackRoute />
@@ -114,13 +109,11 @@ export default function AccountInformation() {
                                             autoComplete="name"
                                             textContentType="givenName"
                                             onBlur={() => setFieldTouched("firstName")}
-                                            caption={
-                                                touched.firstName && errors.firstName
+                                            caption={touched.firstName && errors.firstName
                                                     ? errors.firstName
                                                     : undefined
                                             }
-                                            status={
-                                                touched.firstName && errors.firstName ? "danger" : "basic"
+                                            status={touched.firstName && errors.firstName ? "danger" : "basic"
                                             }
                                         />
                                         <Input
@@ -133,14 +126,11 @@ export default function AccountInformation() {
                                             textContentType="familyName"
                                             autoComplete="name"
                                             onBlur={() => setFieldTouched("lastName")}
-                                            caption={
-                                                touched.lastName && errors.lastName
+                                            caption={ touched.lastName && errors.lastName
                                                     ? errors.lastName
                                                     : undefined
                                             }
-                                            status={
-                                                touched.lastName && errors.lastName ? "danger" : "basic"
-                                            }
+                                            status={touched.lastName && errors.lastName ? "danger" : "basic"}
                                         />
                                         <Input
                                             style={styles.input}
@@ -155,9 +145,7 @@ export default function AccountInformation() {
                                             autoCorrect={false}
                                             label="Email"
                                             onBlur={() => setFieldTouched("email")}
-                                            caption={
-                                                touched.email && errors.email ? errors.email : undefined
-                                            }
+                                            caption={touched.email && errors.email ? errors.email : undefined}
                                             status={touched.email && errors.email ? "danger" : "basic"}
                                         />
                                         <Input
@@ -167,28 +155,17 @@ export default function AccountInformation() {
                                             label="Phone Number"
                                         />
                                         {editProfile ? <Row style={styles.buttonContainer}>
-                                            <Button
-                                                style={styles.button}
-                                                onPress={() => setEditProfile(false)}
-                                            >
+                                            <Button style={styles.button} onPress={() => setEditProfile(false)}>
                                                 Cancel
                                             </Button>
-                                            <Button
-                                                style={styles.button}
-                                                onPress={() => updateUserInformation.mutate(values)}
-                                            >
+                                            <Button style={styles.button} onPress={() => updateUserInformation.mutate(values)}>
                                                 Save
                                             </Button>
-                                        </Row> : <Button
-                                            style={styles.input}
-                                            onPress={() => setEditProfile(true)}
-                                        >
+                                        </Row> : 
+                                        <Button style={styles.input} onPress={() => setEditProfile(true)}>
                                             Edit Profile
                                         </Button>}
-                                        <Button
-                                            style={styles.input}
-                                            onPress={() => router.push("/screens/authentication/ForgotPasswordScreen")}
-                                        >
+                                        <Button style={styles.input} onPress={() => router.push("/screens/authentication/ForgotPasswordScreen")}>
                                             Reset Password
                                         </Button>
                                     </>

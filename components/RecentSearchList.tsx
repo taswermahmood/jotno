@@ -8,9 +8,11 @@ import { RecentSearchButton } from "./RecentSearchBtn";
 import { getFormattedLocationText } from "../utils/getFormattedLocationText";
 
 export const RecentSearchList = ({
+  jobName,
   recentSearches,
   style,
 }: {
+  jobName: string | string [];
   recentSearches?: Location[];
   style?: ViewStyle;
 }) => {
@@ -33,6 +35,7 @@ export const RecentSearchList = ({
   const handleRecentSearchButtonPress = (location: Location) => {
     router.push({
         pathname: "/screens/SearchResults", params: {
+            jobName: jobName,
             location: getFormattedLocationText(location, "autocomplete"),
             lat: location.lat,
             lon: location.lon,

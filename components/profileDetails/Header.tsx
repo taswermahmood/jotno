@@ -9,32 +9,12 @@ import { Specialist } from "@/types/profiles/specialist";
 import { ImageCarousel } from "../ImageCarousel";
 import { BORDER_RADIUS } from "@/constants";
 import { Column } from "../Column";
+import { useUser } from "@/hooks/useUser";
+import { useFavoritedSpecialialistMutation } from "@/hooks/mutations/useFavoritedSpecialistMutation";
+import { FavoriteIcon } from "../FavoriteIcon";
 
 export const SpecialistHeader = ({ specialist }: { specialist: Specialist }) => {
-    //   const { user, setSavedProperties } = useUser();
-    //   const saveProperty = useSavePropertyMutation();
-
-    //   const alterUsersFavorites = (
-    //     propertyID: number,
-    //     type: "add" | "remove"
-    //   ) => {
-    //     let newProperties: number[] = user?.savedProperties
-    //       ? [...user.savedProperties]
-    //       : [];
-
-    //     if (type === "add") newProperties.push(propertyID);
-    //     else newProperties = newProperties.filter((i) => i !== propertyID);
-
-    //     setSavedProperties(newProperties);
-    //   };
-
-    const handleHeartPress = () => {
-        let op: "add" | "remove" = "add";
-        if (specialist?.favorite) op = "remove";
-
-        // alterUsersSavedProperties(property.ID, op);
-        // saveProperty.mutate({ propertyID: property.ID, op });
-    };
+    const { user } = useUser();
 
     const shareItem = async () => {
         try {
@@ -54,47 +34,29 @@ export const SpecialistHeader = ({ specialist }: { specialist: Specialist }) => 
             </View>
             <Row style={styles.iconRow}>
                 <MaterialIcons
-                    onPress={async () => {
-                        await shareItem();
-                    }}
+                    onPress={async () => { await shareItem() }}
                     name="ios-share"
                     size={30}
                     color={theme["color-primary-500"]}
                     style={styles.shareIcon}
                 />
-                <MaterialCommunityIcons
-                    onPress={handleHeartPress}
-                    name={specialist?.favorite ? "heart" : "heart-outline"}
-                    size={30}
-                    color={theme["color-primary-500"]}
-                />
+                <FavoriteIcon specialist={specialist} size={30} />
             </Row>
         </Row>
-        <ImageCarousel style={styles.defaultMarginTop} images={specialist.images} />
+        <ImageCarousel style={styles.defaultMarginTop} images={specialist.images} indexShown={true} avatar={specialist.avatar} />
         <Row style={styles.rowContainer}>
-            {specialist.experience ? <>
-                <Column style={styles.columnAlign}>
-                    <MaterialCommunityIcons name="briefcase-clock" size={24} color={theme["color-warning-400"]} />
-                    <Text style={styles.textAlign}>{specialist.experience} years experience </Text>
-                </Column>
-            </> : null}
-            {specialist.stars ? <>
-                <Column style={styles.columnAlign}>
-                    <MaterialCommunityIcons name="star" size={24} color={theme["color-warning-400"]} />
-                    <Text style={styles.textAlign}>{specialist.stars} stars </Text>
-                </Column>
-            </> : null}
-            {specialist.verified ?
-                <Column style={styles.columnAlign}>
-                    <MaterialCommunityIcons name="check-circle" size={24} color={theme["color-warning-400"]} />
-                    <Text style={styles.textAlign}> Verified</Text>
-                </Column>
-                :
-                <Column style={styles.columnAlign}>
-                    <MaterialCommunityIcons name="close-circle" size={24} color={theme["color-danger-400"]} />
-                    <Text style={styles.textAlign}> Not Verified</Text>
-                </Column>
-            }
+            <Column style={styles.columnAlign}>
+                <MaterialCommunityIcons name="briefcase-clock" size={24} color={theme["color-warning-500"]} />
+                <Text style={styles.textAlign}>{specialist.experience === 0 ? "New to Jotno" : specialist.experience + " years experience"} </Text>
+            </Column>
+            <Column style={styles.columnAlign}>
+                <MaterialCommunityIcons name="star" size={24} color={theme["color-warning-500"]} />
+                <Text style={styles.textAlign}> {specialist.stars === 0 ? "No Reviews" : specialist.stars + " stars"} </Text>
+            </Column>
+            <Column style={styles.columnAlign}>
+                <MaterialCommunityIcons name={specialist.verified ? "check-circle" : "close-circle"} size={24} color={theme["color-warning-500"]} />
+                <Text style={styles.textAlign}>{specialist.verified ? "Verified" : "Not Verified"}</Text>
+            </Column>
         </Row>
     </>
     );
@@ -108,8 +70,8 @@ const styles = StyleSheet.create({
         paddingRight: 5
     },
     shareIcon: {
-        marginRight: 20,
-        marginTop: -4,
+        marginRight: 10,
+        marginTop: -2,
     },
     defaultMarginTop: {
         marginTop: 10

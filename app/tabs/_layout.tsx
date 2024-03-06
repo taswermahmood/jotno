@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect, Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { useAuth } from '@/hooks/useAuth';
 
+import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { useUser } from '@/hooks/useUser';
 import { theme } from "@/theme";
 import { Image } from 'react-native';
 
@@ -15,7 +15,7 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-  const { user } = useAuth()
+  const { user } = useUser()
   if (!user) {
     return <Redirect href="/" />;
   }
@@ -33,7 +33,7 @@ export default function TabLayout() {
           headerTitle: "",
           headerStatusBarHeight: 40,
           headerTitleStyle: { fontSize: 24 },
-          headerLeft: () => (<Image style={{height: 150, width: 100}} source={require("@/assets/images/adaptive-icon.png")} />),
+          headerLeft: () => (<Image style={{ height: 150, width: 100 }} source={require("@/assets/images/adaptive-icon.png")} />),
           tabBarIcon: ({ color }) => <TabBarIcon name="home-variant" color={color} />
         }}
       />

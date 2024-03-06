@@ -5,17 +5,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { theme } from "@/theme";
 import { Row } from '@/components/Row';
 import { Column } from '@/components/Column';
-import { BORDER_RADIUS, endpoints } from '@/constants';
+import { BORDER_RADIUS } from '@/constants';
 import { JobPost } from '@/types/jobPost';
 import { Avatar, Card, } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Comments } from '@/types/comment';
-import { useMutation, useQueryClient } from 'react-query';
-import axios from 'axios';
 import { camelCaseToWords } from '@/utils/handleCase';
-import { getSpecialistById } from '@/services/specialist';
-import { Specialist } from '@/types/profiles/specialist';
+import { getFormattedDate } from '@/utils/getFormatedDate';
+import { useDeletePropertyMutation } from '@/hooks/mutations/useDeleteJobPostMutation';
 
 export const JobPostCard = (
     {
@@ -32,31 +30,7 @@ export const JobPostCard = (
         }
 ) => {
     const [showComments, setShowComments] = useState(false)
-    const queryClient = useQueryClient();
-
-    const getFormattedDate = (date: Date) => {
-        const dateStr = date.toDateString(); // Thu Mar 31 2022
-        const dateArr = dateStr.split(" "); // ['Thu', 'Mar', '31', '2022']
-        return `${dateArr[1]} ${dateArr[2]}, ${dateArr[3]}`;
-    };
-
-    const deleteJobPost = useMutation(
-        () => axios.delete(`${endpoints.deleteJobPost}${jobPost.ID}`),
-        {
-            onMutate: async () => {
-                await queryClient.cancelQueries("myJobPosts");
-                const prevJobPosts: { data: JobPost[] } | undefined = queryClient.getQueryData("myJobPosts");
-                if (prevJobPosts) {
-                    const filtered = prevJobPosts.data.filter((jp) => jp.ID !== jobPost.ID);
-                    queryClient.setQueryData("myJobPosts", filtered)
-                }
-                return prevJobPosts;
-            },
-            onSettled: () => {
-                queryClient.invalidateQueries("myJobPosts");
-            },
-        }
-    )
+    const deleteJobPost = useDeletePropertyMutation();
 
     const getComments = (item: Comments) => {
         return <Pressable onPress={() => { router.push({ pathname: "/screens/SpecialistDetails", params: { specialistID: item.specialistID } }) }} >
@@ -73,7 +47,7 @@ export const JobPostCard = (
                             </Text>
                         </View>
                     </Card>
-                    <Text style={{ margin: 5 }} appearance='hint' category='c1'>{getFormattedDate(new Date(jobPost.CreatedAt))}</Text>
+                    <Text style={{ margin: 5 }} appearance='hint' category='c1'>{getFormattedDate(jobPost.CreatedAt)}</Text>
                 </Column>
             </Row>
         </Pressable>
@@ -93,7 +67,7 @@ export const JobPostCard = (
                             <Text category='s1' style={{ fontWeight: "bold" }}>
                                 {jobPost.title}
                             </Text>
-                            <Text category='c1' appearance="hint">Posted: {new Date(jobPost.CreatedAt).toLocaleDateString()}</Text>
+                            <Text category='c1' appearance="hint">Posted: {getFormattedDate(jobPost.CreatedAt)}</Text>
                         </Column>
                         <Row >
                             <Text category='h6' style={{ marginLeft: 5 }}>
@@ -134,7 +108,7 @@ export const JobPostCard = (
                                 style={styles.button}
                                 appearance='ghost'
                                 size='small'
-                                onPress={() => deleteJobPost.mutate()}
+                                onPress={() => deleteJobPost.mutate(jobPost.ID)}
                             >
                                 Mark Complete
                             </Button> : null}
@@ -142,7 +116,7 @@ export const JobPostCard = (
                                 style={styles.button}
                                 appearance='filled'
                                 size='small'
-                                onPress={() => deleteJobPost.mutate()}
+                                onPress={() => deleteJobPost.mutate(jobPost.ID)}
                             >
                                 Delete
                             </Button>

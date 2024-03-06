@@ -16,7 +16,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.taswermahmood.jotno"
     },
     "android": {
       "permissions": [
@@ -26,7 +27,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#fff"
       },
-      "package": "com.taswermahmood.jotno"
+      "package": "com.taswermahmood.jotno",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

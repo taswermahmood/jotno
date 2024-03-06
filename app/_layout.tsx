@@ -1,3 +1,4 @@
+import { StyleSheet } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
@@ -9,13 +10,12 @@ import { ApplicationProvider } from '@ui-kitten/components';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { useState, useEffect } from 'react';
 import * as SecureStore from "expo-secure-store";
-
-import { useColorScheme } from '@/components/useColorScheme';
-import { AuthContext, LoadingContext } from '@/context';
-import { User } from '@/types/user';
-import { StyleSheet } from 'react-native';
-import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+
+import { AuthContext, LoadingContext } from '@/context';
+import { useColorScheme } from '@/components/useColorScheme';
+import { User } from '@/types/user';
+import i18n from "i18next";
 import en from "@/locales/en/translation.json";
 import bn from "@/locales/bn/translation.json";
 
@@ -64,7 +64,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     async function getUser() {
-      const user = await SecureStore.getItemAsync("user")
+      const user = await SecureStore.getItemAsync("user");
       if (user) setUser(JSON.parse(user))
     }
     getUser();

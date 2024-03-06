@@ -8,7 +8,7 @@ export const MenuRoute = () => {
     return <TouchableOpacity style={{
         padding: 5,
         alignSelf: "center"
-    }} onPress={() => router.push("/tabs/HomeScreen")}>
+    }} onPress={() => {router.push("/tabs/HomeScreen")}}>
         <MaterialCommunityIcons name="select-group" size={28} color={theme["color-primary-500"]} />
     </TouchableOpacity>
 }

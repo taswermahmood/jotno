@@ -12,12 +12,13 @@ export type Specialist = {
         experience: number;
         jobs: Jobs[];
         lat: number;
-        lon: number,
-        stars: number,
-        phoneNumber?: string,
-        about?: string,
-        reviews?: Review[],
-        verified?: boolean, 
-        posts?: Post[],
-        idCard?: string
+        lon: number;
+        stars: number;
+        phoneNumber?: string;
+        about?: string;
+        reviews?: Review[];
+        verified?: boolean; 
+        posts?: Post[];
+        idCard?: string;
+        favorited?:boolean;
 }

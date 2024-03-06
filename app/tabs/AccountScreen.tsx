@@ -3,14 +3,14 @@ import { Screen } from "@/components/Screen";
 import { FlatList, StyleSheet, Touchable, TouchableOpacity, View, RefreshControl } from 'react-native';
 import { BORDER_RADIUS, LISTMARGIN } from '@/constants';
 import { router } from 'expo-router';
-import { useAuth } from '@/hooks/useAuth';
+import { useUser } from '@/hooks/useUser';
 import { useTranslation } from 'react-i18next';
 import { theme } from '@/theme';
 import { useCallback, useState } from 'react';
 import { Icon, List, Modal } from 'react-native-paper';
 
 export default function AccountScreen() {
-  const { user, logout } = useAuth()
+  const { user, logout } = useUser()
   // const user = true;
   const [languageModal, setLanguageModal] = useState(false)
   const [refreshing, setRefreshing] = useState(false);
@@ -53,6 +53,10 @@ export default function AccountScreen() {
         {
           title: t("Payments"),
           iconName: "credit-card",
+        },
+        {
+          title: t("Notifications"),
+          iconName: "bell-ring",
         }]
     },
     {

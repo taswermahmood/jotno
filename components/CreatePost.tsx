@@ -12,9 +12,7 @@ import { BORDER_RADIUS } from "@/constants";
 import { Row } from "./Row";
 import { theme } from "@/theme";
 import { Column } from "./Column";
-import { useMutation } from "react-query";
-import { createJobPosts } from "@/services/user";
-import { Loading } from "./Loading";
+import { useCreateJobPostMutation } from "@/hooks/mutations/useCreateJobPostMutation";
 
 
 const maxChars = 512;
@@ -37,17 +35,22 @@ export const CreatePost = ({
     setShowDatePicker(false);
   };
 
-  const createPost = useMutation(
-    async (values: { title: string; description: string; wage: string; }) => {
-      const jobPost = await createJobPosts(userId, pickedJobType, values.title, values.description, Number(values.wage), pickedFrequency, date.toLocaleDateString());
-      if (jobPost) {
-        alert("Job successfully posted.");
-        onPost();
-      }
-    }
-  );
+  const createJobPost = useCreateJobPostMutation();
 
-  if (createPost.isLoading) return <Loading />
+  const handleSubmit = (values: { title: string; description: string; wage: string; }) => {
+    const jobPost = {
+      userID: userId,
+      jobType: pickedJobType,
+      title: values.title,
+      description: values.description,
+      wage: Number(values.wage),
+      wageFrequency: pickedFrequency,
+      dateTime: date.toLocaleDateString()
+    }
+    createJobPost.mutate(jobPost);
+    onPost();
+  }
+
   return (
     <KeyboardAwareScrollView>
       <Formik
@@ -62,7 +65,7 @@ export const CreatePost = ({
           description: yup.string().required("Description is required."),
           wage: yup.string().required("Please enter the amount you want to pay for this job."),
         })}
-        onSubmit={(values) => { createPost.mutate(values) }}
+        onSubmit={(values) => { handleSubmit(values) }}
       >
         {({
           values,
@@ -83,7 +86,7 @@ export const CreatePost = ({
                 }>
                 <Picker.Item label="Pet Care" value="petCare" />
                 <Picker.Item label="Elderly Care" value="elderlyCare" />
-                <Picker.Item label="Baby Sitter" value="babySitter" />
+                <Picker.Item label="Baby Sitter" value="babySitting" />
                 <Picker.Item label="House Keeping" value="houseKeeping" />
                 <Picker.Item label="Teacher" value="teacher" />
               </Picker>

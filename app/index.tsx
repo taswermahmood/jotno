@@ -1,21 +1,41 @@
 import { Text } from '@ui-kitten/components';
 import { Image, StyleSheet, View } from 'react-native';
-import { useAuth } from "@/hooks/useAuth";
+import { useUser } from "@/hooks/useUser";
 import { Redirect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import * as Notifications from 'expo-notifications';
 
 import { Screen } from "@/components/Screen";
 import { SignUpAndSignInButton } from '@/components/SignUpAndSignInButton';
 import { theme } from '@/theme';
 import { BORDER_RADIUS } from '@/constants';
 import { ScreenView } from '@/components/ScreenView';
+import { useNotifications } from '@/hooks/useNotifications';
+import { useEffect } from 'react';
 
 
 export default function SignUpSignIn() {
     const { t } = useTranslation();
-    const { user } = useAuth()
-    return (<> 
-            {user ? <Redirect href="/tabs/HomeScreen" /> :
+    const { user } = useUser()
+    const { registerForPushNotificationsAsync, handleNotificationResponse } = useNotifications();
+    
+    useEffect(() => {
+        registerForPushNotificationsAsync();
+        Notifications.setNotificationHandler({
+            handleNotification: async () => ({
+                shouldShowAlert: true,
+                shouldPlaySound: true,
+                shouldSetBadge: true,
+            }),
+        });
+        const responseListener = Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+        return () => {
+            if (responseListener) Notifications.removeNotificationSubscription(responseListener);
+        }
+    }, []);
+
+    return (<>
+        {user ? <Redirect href="/tabs/HomeScreen" /> :
             <Screen style={styles.container} >
                 <ScreenView>
                     <Image style={{ alignSelf: "center", width: 250, height: 200, margin: 50 }} source={require("@/assets/images/icon.png")} />

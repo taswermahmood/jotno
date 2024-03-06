@@ -3,9 +3,6 @@ import { Input, Button, Text } from "@ui-kitten/components";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useMutation } from "react-query";
-import * as Facebook from "expo-auth-session/providers/facebook";
-import * as Google from "expo-auth-session/providers/google";
 import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import RNPhoneInput from "react-native-phone-number-input";
@@ -18,75 +15,16 @@ import { LoginDivider } from "@/components/LoginDivider";
 import { PasswordInput } from "@/components/PasswordInput";
 import { GoBackRoute } from "@/components/GoBackRoute";
 import { BORDER_RADIUS } from "@/constants";
-import { facebookLoginRegister, googleLoginRegister, registerUser } from "@/services/user";
-import { useAuth } from "@/hooks/useAuth";
-import { useRouter } from "expo-router";
-import { Loading } from "@/components/Loading";
 import { PhoneInput } from "@/components/PhoneInput";
+import { useAuth } from "@/hooks/useAuth";
 
 
 export default function SignUpScreen() {
-    const router = useRouter();
-    const { login } = useAuth();
     const { t } = useTranslation();
+    const { nativeRegister, facebookAuth, googleAuth } = useAuth()
 
     const [phoneVerified, setPhoneVerified] = useState(false);
     const phoneRef = useRef<RNPhoneInput>(null);
-
-    const [__, ___, fbPromt] = Facebook.useAuthRequest({ clientId: "376557685324796" });
-    const [_, googleResponse, googleAuth] = Google.useAuthRequest({
-        expoClientId:
-            "798634518659-dvr083qo5f16396gncnflha1sq9v065g.apps.googleusercontent.com",
-        iosClientId:
-            "1080382822276-a0ms51p5cfc523bivhchs8nk04u2scq0.apps.googleusercontent.com",
-        androidClientId:
-            "1080382822276-dqohv9donltabnijor1uun2765hstr4v.apps.googleusercontent.com",
-        webClientId: "GOOGLE_GUID.apps.googleusercontent.com",
-        selectAccount: true,
-    });
-
-
-    const nativeRegister = useMutation(
-        async (values: {
-            firstName: string;
-            lastName: string;
-            email: string;
-            password: string;
-            phoneNumber: string;
-        }) => {
-            const user = await registerUser(values.firstName, values.lastName, values.email, values.password, values.phoneNumber);
-            if (user) {
-                login(user);
-                router.back();
-            }
-        }
-    );
-
-    const facebookRegister = useMutation(async () => {
-        const response = await fbPromt();
-        if (response.type === "success") {
-            const { accessToken } = response.params;
-            const user = await facebookLoginRegister(accessToken);
-            if (user) {
-                login(user);
-                router.back();
-            }
-        }
-    });
-
-    const googleRegister = useMutation(async () => {
-        const response = await googleAuth();
-        if (response.type === "success") {
-            const { accessToken } = response.params;
-            const user = await googleLoginRegister(accessToken);
-            if (user) {
-                login(user);
-                router.back();
-            }
-        }
-    });
-
-    if (nativeRegister.isLoading || facebookRegister.isLoading || googleRegister.isLoading) return <Loading />
 
 
     return <KeyboardAwareScrollView bounces={false} style={{ backgroundColor: "#fff" }}>
@@ -118,7 +56,7 @@ export default function SignUpScreen() {
                                     "Your password must have 8 characters, 1 uppercase letter, 1 lowercase letter, and 1 special character."
                                 ),
                         })}
-                        onSubmit={async (values) => { nativeRegister.mutate(values) }}
+                        onSubmit={async (values) => { await nativeRegister(values) }}
                     >
                         {({
                             values,
@@ -181,8 +119,8 @@ export default function SignUpScreen() {
                                                 label={t("Email")}
                                                 onBlur={() => setFieldTouched("email")}
                                                 caption={
-                                                    touched.email && errors.email 
-                                                        ? errors.email 
+                                                    touched.email && errors.email
+                                                        ? errors.email
                                                         : undefined
                                                 }
                                                 status={touched.email && errors.email ? "danger" : "basic"}
@@ -215,12 +153,12 @@ export default function SignUpScreen() {
                                             <GoogleButton
                                                 text={t("Sign up with Google")}
                                                 style={styles.button}
-                                                onPress={async () => { googleRegister.mutate() }}
+                                                onPress={async () => { await googleAuth() }}
                                             />
                                             <FacebookButton
                                                 text={t("Sign up with Facebook")}
                                                 style={styles.button}
-                                                onPress={async () => { facebookRegister.mutate() }}
+                                                onPress={async () => { await facebookAuth() }}
                                             />
                                         </> : <>
                                             <PhoneInput
@@ -236,11 +174,11 @@ export default function SignUpScreen() {
                                                 onBlur={() => setFieldTouched("phoneNumber")}
                                             />
                                             <Button
-                                                disabled={phoneRef.current?.isValidNumber(values.phoneNumber)? false: true}
+                                                disabled={phoneRef.current?.isValidNumber(values.phoneNumber) ? false : true}
                                                 style={styles.signUpButton}
                                                 onPress={() => setPhoneVerified(true)}
                                             >
-                                              {t("Continue")}
+                                                {t("Continue")}
                                             </Button></>}
                                 </>
                             );

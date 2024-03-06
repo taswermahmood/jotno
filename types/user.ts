@@ -8,5 +8,7 @@ export type User = {
     wallet: number;
     avatar: string;
     phoneNumber: string;
-    favorites: Specialist[] | null;
+    favorites: number[] | null;
+    allowsNotifications: boolean;
+    pushToken?: string;
 }

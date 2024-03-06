@@ -18,10 +18,10 @@ export default function HomeScreen() {
         <Text style={{ margin: 10 }} category='h6'>{t("How can we help you today?")}</Text>
         <View style={{ margin: 20 }}>
           <Row style={{ alignContent: "center", justifyContent: "space-around" }}>
-            <TouchableOpacity onPress={() => { router.push("/screens/SpecialistDetails") }}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/screens/SearchResults", params: { jobName: "petCare" }})}>
               <Column style={{ alignItems: "center" }}>
                 <LottieView
-                  speed={0.6    }
+                  speed={0.6}
                   autoPlay
                   loop
                   style={{ height: 120, width: 120 }}
@@ -29,7 +29,7 @@ export default function HomeScreen() {
                 <Text category='h6' appearance={"hint"}>{t("Pet Care")}</Text>
               </Column>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { router.push("/screens/SearchResults") }}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/screens/SearchResults", params: { jobName: "babySitting" }})}>
               <Column style={{ alignItems: "center" }}>
                 <LottieView
                   autoPlay
@@ -39,7 +39,7 @@ export default function HomeScreen() {
                 <Text category='h6' appearance={"hint"}>{t("Baby Sitter")}</Text>
               </Column>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { router.push("/screens/account/AccountInformation") }}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/screens/SearchResults", params: { jobName: "houseKeeping" }})}>
               <Column style={{ alignItems: "center" }}>
                 <LottieView
                   autoPlay
@@ -51,7 +51,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </Row>
           <Row style={{ alignContent: "center", justifyContent: "space-around", marginTop: 20 }}>
-            <TouchableOpacity onPress={() => { router.push("/screens/SearchResults") }}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/screens/SearchResults", params: { jobName: "teaching" }})}>
               <Column style={{ alignItems: "center" }}>
                 <LottieView
                   speed={0.3}
@@ -62,7 +62,7 @@ export default function HomeScreen() {
                 <Text category='h6' appearance={"hint"}>{t("Teacher")}</Text>
               </Column>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { router.push("/screens/SearchResults") }}>
+            <TouchableOpacity onPress={() => router.push({ pathname: "/screens/SearchResults", params: { jobName: "elderlyCare" }})}>
               <Column style={{ alignItems: "center" }}>
                 <LottieView
                   autoPlay

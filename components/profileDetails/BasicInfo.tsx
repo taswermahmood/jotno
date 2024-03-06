@@ -13,17 +13,16 @@ import { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Column } from "../Column";
 import { LocationSection } from "./Location";
+import { Jobs } from "@/types/profiles/job";
+import { camelCaseToWords } from "@/utils/handleCase";
 
 
 export const SpecialistBasicInfo = ({ specialist }: { specialist: Specialist }) => {
-    const type = "Teaching"
-    const index = specialist.jobs.findIndex(i => i.jobName === type)
-    const job = specialist.jobs[index];
-
-    const [currentJob, setCurrentJob] = useState(specialist.jobs[index])
+    const [currentJob, setCurrentJob] = useState<Jobs>(specialist.jobs[0]);
+    
     useEffect(() => {
-        if (specialist.jobs[index] !== currentJob) {
-            setCurrentJob(specialist.jobs[index])
+        if (specialist.jobs[0] !== currentJob) {
+            setCurrentJob(specialist.jobs[0])
         }
     }, [specialist.jobs])
     return (<Screen >
@@ -38,7 +37,7 @@ export const SpecialistBasicInfo = ({ specialist }: { specialist: Specialist }) 
 
         {/* pay rates */}
         {currentJob ? <>
-            <Text category='h5'>{type} fees</Text>
+            <Text category='h5'>{camelCaseToWords(currentJob.jobName)} fees</Text>
             <FlatList
                 data={currentJob.frequencies}
                 keyExtractor={(item) => item.name}
@@ -49,12 +48,12 @@ export const SpecialistBasicInfo = ({ specialist }: { specialist: Specialist }) 
                                 Payment:
                             </Text>
                             <Text category='s1' style={styles.defaultMarginLeft}>
-                                {item.name}
+                                {camelCaseToWords(item.name)}
                             </Text>
                         </Row>
                         <Row style={styles.contentMargin}>
                             <Text category='s1' style={styles.bold}>
-                                {item.keyWord}:
+                                {camelCaseToWords(item.keyWord)}s:
                             </Text>
                             <Text category='s1' style={styles.defaultMarginLeft}>
                                 {item.workTypes.join(', ')}
@@ -148,6 +147,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        paddingBottom: 100
+        marginBottom: 10
     },
 });

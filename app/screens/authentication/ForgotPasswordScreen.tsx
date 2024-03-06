@@ -4,39 +4,32 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Screen } from "@/components/Screen";
 import { ScreenView } from "@/components/ScreenView";
-
 import { GoBackRoute } from "@/components/GoBackRoute";
-import { BORDER_RADIUS, endpoints } from "@/constants";
-import { useMutation } from "react-query";
-import axios from "axios";
-import { Loading } from "@/components/Loading";
-import { useTranslation } from "react-i18next";
+import { BORDER_RADIUS } from "@/constants";
+import { useLoading } from "@/hooks/useLoading";
+import { forgotPassword } from "@/services/user";
 
 
 export default function ForgotPasswordScreen() {
     const { t } = useTranslation();
     const [emailSent, setEmailSent] = useState(false);
-    // const { setLoading } = useLoading();
+    const { setLoading } = useLoading();
 
-    const forgotPassword = useMutation(
-        async (email: string) => {
-            return axios.post(endpoints.forgotPassword, {
-                email
-            });
-        },
-        {
-            onSuccess(data) {
-                if (data.data.emailSent) setEmailSent(true)
-            },
-            onError(error: any) {
-                alert(error?.response.data.detail)
-            }
+    const handleSubmit = async (values : {email: string}) => {
+        try {
+            setLoading(true);
+            const emailSent = await forgotPassword(values.email);
+            if (emailSent?.emailSent) setEmailSent(true)
+        } catch (error) {
+            alert("Could not send email at this time. Try again later.")
+        } finally {
+            setLoading(false)
         }
-    )
-    if (forgotPassword.isLoading) return <Loading />
+    }
 
     return <KeyboardAwareScrollView bounces={false} style={{ backgroundColor: "#fff" }}>
         <Screen >
@@ -44,21 +37,14 @@ export default function ForgotPasswordScreen() {
                 <GoBackRoute />
                 {emailSent ? (
                     <>
-                        <Text category={"h5"} style={styles.header}>
-                            {t("Email Sent!")}
-                        </Text>
-                        <Text>
-                            {t("An email containing instructions about how to change your password has been sent to you. Please check your junk mail or spam section if you do not see an email.")}
+                        <Text category={"h5"} style={styles.header}> {t("Email Sent!")} </Text>
+                        <Text> {t("An email containing instructions about how to change your password has been sent to you. Please check your junk mail or spam section if you do not see an email.")}
                         </Text>
                     </>
                 ) : (
                     <>
-                        <Text category={"h5"} style={styles.header}>
-                            {t("Forgot your password?")}
-                        </Text>
-                        <Text>
-                            {t("Please enter your email, and we'll send you a link to change your password.")}
-                        </Text>
+                        <Text category={"h5"} style={styles.header}> {t("Forgot your password?")} </Text>
+                        <Text> {t("Please enter your email, and we'll send you a link to change your password.")} </Text>
                         <Formik
                             initialValues={{
                                 email: "",
@@ -66,7 +52,7 @@ export default function ForgotPasswordScreen() {
                             validationSchema={yup.object().shape({
                                 email: yup.string().email().required("Please enter your email address."),
                             })}
-                            onSubmit={(values) => { forgotPassword.mutate(values.email) }}
+                            onSubmit={ handleSubmit }
                         >
                             {({
                                 values,
@@ -74,9 +60,7 @@ export default function ForgotPasswordScreen() {
                                 touched,
                                 handleChange,
                                 handleSubmit,
-                                isSubmitting,
                                 setFieldTouched,
-                                setFieldValue,
                             }) => {
                                 return (
                                     <>
@@ -90,18 +74,10 @@ export default function ForgotPasswordScreen() {
                                             autoComplete="email"
                                             label="Email"
                                             onBlur={() => setFieldTouched("email")}
-                                            caption={
-                                                touched.email && errors.email ? errors.email : undefined
-                                            }
-                                            status={
-                                                touched.email && errors.email ? "danger" : "basic"
-                                            }
+                                            caption={ touched.email && errors.email ? errors.email : undefined}
+                                            status={ touched.email && errors.email ? "danger" : "basic" }
                                         />
-
-                                        <Button
-                                            style={styles.button}
-                                            onPress={() => handleSubmit()}
-                                        >
+                                        <Button style={styles.button} onPress={() => handleSubmit}>
                                             Continue
                                         </Button>
                                     </>

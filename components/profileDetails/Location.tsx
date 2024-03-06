@@ -1,13 +1,10 @@
 import { View, StyleSheet, ViewStyle } from "react-native";
 import { Text } from "@ui-kitten/components";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MapView, { PROVIDER_GOOGLE } from "react-native-maps";
 
 import { Specialist } from "@/types/profiles/specialist";
-import { Row } from "@/components/Row";
 import { MapMarker } from "@/components/MapMarker";
 import { theme } from "@/theme";
-import { BORDER_RADIUS } from "@/constants";
 
 export const LocationSection = ({ specialist, style}: { specialist: Specialist, style?: ViewStyle }) => {
   return (
