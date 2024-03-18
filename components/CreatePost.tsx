@@ -8,7 +8,7 @@ import { Picker } from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from "react";
 
-import { BORDER_RADIUS } from "@/constants";
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from "@/constants";
 import { Row } from "./Row";
 import { theme } from "@/theme";
 import { Column } from "./Column";
@@ -37,13 +37,13 @@ export const CreatePost = ({
 
   const createJobPost = useCreateJobPostMutation();
 
-  const handleSubmit = (values: { title: string; description: string; wage: string; }) => {
+  const handleSubmit = (values: { title: string; description: string; salary: string; }) => {
     const jobPost = {
       userID: userId,
       jobType: pickedJobType,
       title: values.title,
       description: values.description,
-      wage: Number(values.wage),
+      wage: Number(values.salary),
       wageFrequency: pickedFrequency,
       dateTime: date.toLocaleDateString()
     }
@@ -57,7 +57,7 @@ export const CreatePost = ({
         initialValues={{
           title: "",
           description: "",
-          wage: "",
+          salary: "",
           wageCurrency: "BDT",
         }}
         validationSchema={yup.object().shape({
@@ -85,10 +85,10 @@ export const CreatePost = ({
                   setPickedJobType(itemValue)
                 }>
                 <Picker.Item label="Pet Care" value="petCare" />
-                <Picker.Item label="Elderly Care" value="elderlyCare" />
+                {/* <Picker.Item label="Elderly Care" value="elderlyCare" />
                 <Picker.Item label="Baby Sitter" value="babySitting" />
-                <Picker.Item label="House Keeping" value="houseKeeping" />
-                <Picker.Item label="Teacher" value="teacher" />
+                <Picker.Item label="House Keeping" value="houseKeeping" /> */}
+                <Picker.Item label="Teacher" value="teaching" />
               </Picker>
               <Input
                 style={styles.input}
@@ -122,16 +122,16 @@ export const CreatePost = ({
               <Row style={{ justifyContent: "space-between", alignItems: "center" }}>
                 <Input
                   style={[styles.input, { width: "85%" }]}
-                  value={values.wage}
+                  value={values.salary}
                   keyboardType="number-pad"
-                  onChangeText={handleChange("wage")}
-                  placeholder="Wage"
-                  label="Wage"
-                  onBlur={() => setFieldTouched("wage")}
+                  onChangeText={handleChange("salary")}
+                  placeholder="salary"
+                  label="Salary"
+                  onBlur={() => setFieldTouched("salary")}
                   caption={
-                    touched.wage && errors.wage ? errors.wage : undefined
+                    touched.salary && errors.salary ? errors.salary : undefined
                   }
-                  status={touched.wage && errors.wage ? "danger" : "basic"}
+                  status={touched.salary && errors.salary ? "danger" : "basic"}
                 />
                 <Text style={{ marginHorizontal: 10, marginTop: 25 }}>{values.wageCurrency}</Text>
               </Row>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   signInButton: {
     marginTop: 20,
-    borderRadius: BORDER_RADIUS
+    borderRadius: BUTTON_BORDER_RADIUS
   }
 });
 

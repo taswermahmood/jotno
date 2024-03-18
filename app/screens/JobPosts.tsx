@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, StyleSheet, View, ViewStyle } from "react-native";
-import LottieView from "lottie-react-native";
-import { Button, Text } from "@ui-kitten/components";
+import { FlatList, StyleSheet, View } from "react-native";
+import { Button } from "@ui-kitten/components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { LISTMARGIN } from "@/constants";
@@ -11,14 +10,17 @@ import { Loading } from "../../components/Loading";
 import { JobPostCard } from "../../components/JobPostCard";
 import { CreatePost } from "../../components/CreatePost";
 import { useJobPostsQuery } from "@/hooks/queries/useJobPostsQuery";
+import { Redirect } from "expo-router";
+import { Screen } from "@/components/Screen";
+import { AnimationLottie } from "@/components/AnimationLottie";
 
-export const JobPosts = ({style}: {style?: ViewStyle | ViewStyle[]}) => {
+export const JobPosts = () => {
+    const { user } = useUser()
+    if (!user) return <Redirect href="/" />;
+
     const { t } = useTranslation();
     const [showCreatePost, setShowCreatePost] = useState(false);
-    const { user } = useUser();
-
     const jobPosts = useJobPostsQuery(user?.ID);
-    
     if (jobPosts.isFetching) return <Loading />
 
     const closeCreatePost = () => {
@@ -27,63 +29,37 @@ export const JobPosts = ({style}: {style?: ViewStyle | ViewStyle[]}) => {
 
     if (user && showCreatePost)
         return (
-            <View style={{ marginHorizontal: LISTMARGIN }}>
-                <MaterialCommunityIcons style={{ alignSelf: "flex-end" }} name="close" size={28} onPress={() => setShowCreatePost(false)} />
+            <Screen style={{ marginHorizontal: LISTMARGIN }}>
+                <MaterialCommunityIcons style={{ alignSelf: "flex-end", padding: 5 }} name="close" size={28} onPress={() => setShowCreatePost(false)} />
                 <CreatePost userId={user.ID} onPost={() => { closeCreatePost() }} />
-            </View>
+            </Screen>
         )
-    return <View style={[styles.container, style]}>
-        {jobPosts.data && jobPosts.data.length > 0 ? <>
-            <FlatList
-                data={jobPosts.data}
-                keyExtractor={(item) => item.ID.toString()}
-                renderItem={({ item }) => (
-                    <JobPostCard style={{ marginHorizontal: LISTMARGIN }} jobPost={item} active={true} />
-                )} />
-        </> :
-            (
-                <View style={[styles.lottieContainer, { height: "100%" }]}>
-                    <LottieView
-                        autoPlay
-                        loop
-                        style={styles.lottie}
-                        source={require("@/assets/lotties/createJobPost.json")}
-                    />
-                    <View style={styles.headerContainer}>
-                        <Text category={"h6"}>{t("Create a job post.")}</Text>
-                        <Text appearance={"hint"} style={styles.subHeader}>
-                            {t("Have Jotno Specialists reach out to you.")}
-                        </Text>
-                    </View>
-                </View>
-            )
-        }
-        <View style={{ marginHorizontal: LISTMARGIN }}>
-            <Button onPress={() => setShowCreatePost(true)} style={styles.button} appearance="filled" > Create post </Button>
-        </View>
-    </View>;
+    return (
+        <Screen>
+            {jobPosts.data && jobPosts.data.length > 0 ?
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    data={jobPosts.data}
+                    keyExtractor={(item) => item.ID.toString()}
+                    renderItem={({ item }) => (
+                        <JobPostCard style={{ marginHorizontal: LISTMARGIN }} jobPost={item} active={true} />
+                    )} />
+                :
+                <AnimationLottie
+                    title="Create a job post."
+                    subHeader="Have Jotno Specialists reach out to you."
+                    source={require("@/assets/lotties/createJobPost.json")}
+                />
+
+            }
+            <View style={{ marginHorizontal: LISTMARGIN }}>
+                <Button onPress={() => setShowCreatePost(true)} style={styles.button} appearance="filled" > Create post </Button>
+            </View>
+        </Screen>
+    );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        height: "100%"
-    },
-    lottieContainer: {
-        backgroundColor: "#fff",
-        alignItems: "center",
-    },
-    lottie: {
-        height: 250,
-        width: 250
-    },
-    headerContainer: {
-        marginHorizontal: 20,
-        alignItems: "center"
-    },
-    subHeader: {
-        marginTop: 10,
-        textAlign: "center"
-    },
     button: {
         position: "absolute",
         bottom: 30,

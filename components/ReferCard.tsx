@@ -3,6 +3,7 @@ import { Card, Text } from 'react-native-paper';
 import LottieView from 'lottie-react-native';
 import { Button } from '@ui-kitten/components';
 import { useTranslation } from 'react-i18next';
+import { BUTTON_BORDER_RADIUS } from '@/constants';
 
 export const ReferCard = () => {
     const { t } = useTranslation();
@@ -33,6 +34,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     button: {
-        margin: 10
+        margin: 10,
+        borderRadius: BUTTON_BORDER_RADIUS
     }
 });

@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { Screen } from "@/components/Screen";
 import { ScreenView } from "@/components/ScreenView";
 import { GoBackRoute } from "@/components/GoBackRoute";
-import { BORDER_RADIUS } from "@/constants";
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from "@/constants";
 import { useLoading } from "@/hooks/useLoading";
 import { forgotPassword } from "@/services/user";
 
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     },
     button: {
         marginTop: 20,
-        borderRadius: BORDER_RADIUS
+        borderRadius: BUTTON_BORDER_RADIUS
     },
     input: {
         marginTop: 10,

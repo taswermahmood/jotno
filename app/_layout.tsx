@@ -1,5 +1,3 @@
-import { StyleSheet } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
@@ -11,6 +9,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { useState, useEffect } from 'react';
 import * as SecureStore from "expo-secure-store";
 import { initReactI18next } from "react-i18next";
+import * as Notifications from 'expo-notifications';
 
 import { AuthContext, LoadingContext } from '@/context';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -18,6 +17,9 @@ import { User } from '@/types/user';
 import i18n from "i18next";
 import en from "@/locales/en/translation.json";
 import bn from "@/locales/bn/translation.json";
+import { socket } from '@/constants/socket';
+import { queryKeys } from '@/constants';
+import { refreshTokens } from '@/services/token';
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',
@@ -50,8 +52,9 @@ export default function RootLayout() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-    ...FontAwesome.font,
+    "inter": require('../assets/fonts/Inter-Regular.ttf'),
+    'inter-sb': require('../assets/fonts/Inter-SemiBold.ttf'),
+    'inter-b': require('../assets/fonts/Inter-Bold.ttf'),
   });
 
   useEffect(() => {
@@ -65,9 +68,80 @@ export default function RootLayout() {
   useEffect(() => {
     async function getUser() {
       const user = await SecureStore.getItemAsync("user");
-      if (user) setUser(JSON.parse(user))
+      if (user) {
+        const userObj: User = JSON.parse(user);
+        const refreshedToken = await refreshTokens(userObj.refreshToken);
+        if (refreshedToken) {
+          userObj.accessToken = refreshedToken.accessToken;
+          userObj.refreshToken = refreshedToken.refreshToken;
+          SecureStore.setItemAsync("user", JSON.stringify(userObj));
+        }
+        setUser(userObj);
+        socket.auth = {
+          userID: userObj.ID,
+          username:
+            userObj.firstName && userObj.lastName
+              ? `${userObj.firstName} ${userObj.lastName}`
+              : `${userObj.email}`,
+          accessToken: userObj.accessToken,
+        };
+
+        socket.connect();
+      }
     }
-    getUser();
+    getUser().then(() => {
+      socket.on(
+        "getMessage",
+        (data: {
+          senderID: number;
+          senderName: string;
+          conversationID: number;
+          text: string;
+        }) => {
+          queryClient.invalidateQueries(queryKeys.chats);
+          queryClient.invalidateQueries(queryKeys.selectedChat);
+
+          Notifications.scheduleNotificationAsync({
+            content: {
+              title: data.senderName,
+              body: data.text,
+              data: {
+                // will need to change url in prod build (use process.ENV && eas.json)
+                url: `exp://192.168.30.24:19000/--/messages/${data.conversationID}/${data.senderName}`,
+              },
+            },
+            trigger: null,
+          });
+        }
+      );
+      socket.on("session", (data: { sessionID: string }) => {
+        socket.auth = { sessionID: data.sessionID };
+        if (user) {
+          const updatedUser = { ...user };
+          updatedUser.sessionID = data.sessionID;
+          setUser(updatedUser);
+          SecureStore.setItemAsync("user", JSON.stringify(updatedUser));
+        }
+      });
+
+      socket.on("connect_error", (err) => {
+        if (err.message === "Invalid userID" && user) {
+          socket.auth = {
+            userID: user?.ID,
+            username:
+              user.firstName && user.lastName
+                ? `${user.firstName} ${user.lastName}`
+                : `${user.email}`,
+          };
+          socket.connect();
+        }
+      });
+    });
+    return () => {
+      socket.off("getMesssage");
+      socket.off("session");
+      socket.off("connect_error");
+    };
   }, []);
 
   if (!loaded) return null;
@@ -77,20 +151,22 @@ export default function RootLayout() {
         <QueryClientProvider client={queryClient}>
           <ApplicationProvider {...eva} theme={theme}>
             <ThemeProvider value={colorScheme === 'dark' ? DefaultTheme : DefaultTheme}>
-              <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="tabs" options={{ headerShown: false }} />
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen name="tabs" options={{ headerShown: false }} />
 
-                <Stack.Screen name="screens/SearchResults" options={{ presentation: 'modal', headerShown: false }} />
-                <Stack.Screen name="screens/FindJotno" options={{ presentation: 'modal', headerShown: false }} />
-                <Stack.Screen name="screens/SpecialistDetails" options={{ presentation: 'modal', headerShown: false }} />
-                <Stack.Screen name="screens/account/AccountInformation" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/SearchResults" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/FindJotno" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/SpecialistDetails" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/SpecialistChat" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/MessageSpecialist" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/account/AccountInformation" options={{ presentation: 'modal', headerShown: false }} />
 
-                <Stack.Screen name="screens/authentication/SignInScreen" options={{ presentation: 'modal', headerShown: false }} />
-                <Stack.Screen name="screens/authentication/SignUpScreen" options={{ presentation: 'modal', headerShown: false }} />
-                <Stack.Screen name="screens/authentication/ResetPasswordScreen" options={{ presentation: 'modal', headerShown: false }} />
-                <Stack.Screen name="screens/authentication/ForgotPasswordScreen" options={{ presentation: 'modal', headerShown: false }} />
-              </Stack>
+                  <Stack.Screen name="screens/authentication/SignInScreen" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/authentication/SignUpScreen" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/authentication/ResetPasswordScreen" options={{ presentation: 'modal', headerShown: false }} />
+                  <Stack.Screen name="screens/authentication/ForgotPasswordScreen" options={{ presentation: 'modal', headerShown: false }} />
+                </Stack>
             </ThemeProvider>
           </ApplicationProvider>
         </QueryClientProvider>
@@ -98,14 +174,3 @@ export default function RootLayout() {
     </LoadingContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "space-around",
-    alignItems: "center"
-  },
-  lottie: {
-    height: 120,
-    width: 120
-  },
-})

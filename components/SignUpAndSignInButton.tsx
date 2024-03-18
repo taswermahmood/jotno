@@ -1,4 +1,4 @@
-import { BORDER_RADIUS } from "@/constants"
+import { BUTTON_BORDER_RADIUS } from "@/constants"
 import { theme } from "@/theme"
 import { Button } from "@ui-kitten/components"
 import { StyleSheet, View, ViewStyle } from "react-native"
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         width: "80%",
         marginVertical: 10,
-        borderRadius: BORDER_RADIUS,
+        borderRadius: BUTTON_BORDER_RADIUS,
         borderWidth: 1,
         borderColor: theme["color-primary-500"]
     }

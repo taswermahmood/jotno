@@ -1,12 +1,12 @@
-import { View, StyleSheet, FlatList, Image } from "react-native";
+import { StyleSheet, FlatList, Image } from "react-native";
 import { Divider, Text } from "@ui-kitten/components";
 
 import { Row } from "@/components/Row";
 import { Specialist } from "@/types/profiles/specialist";
 import { BORDER_RADIUS, WIDTH } from "@/constants";
-import LottieView from "lottie-react-native";
 import { Screen } from "../Screen";
 import { useEffect, useState } from "react";
+import { AnimationLottie } from "../AnimationLottie";
 
 
 export const SpecialistFeed = ({ specialist }: { specialist: Specialist }) => {
@@ -19,6 +19,7 @@ export const SpecialistFeed = ({ specialist }: { specialist: Specialist }) => {
     return (<Screen >
         {currentSpecialistsPosts && currentSpecialistsPosts.length > 0 ? <>
             <FlatList
+                showsVerticalScrollIndicator={false}
                 data={currentSpecialistsPosts}
                 keyExtractor={(item) => item.ID.toString()}
                 renderItem={({ item }) => (
@@ -33,21 +34,17 @@ export const SpecialistFeed = ({ specialist }: { specialist: Specialist }) => {
                         </Row>
                         {item.caption ? <Text category='s1' style={{ marginLeft: 5 }}>
                             {item.caption}
-                        </Text> : null }
+                        </Text> : null}
                         {item.media ? <Image style={styles.image} source={{ uri: item.media }} /> : null}
                         <Divider style={styles.divider} ></Divider>
                     </>
                 )} />
-        </> : <View style={styles.lottieContainer}>
-            <LottieView
-                autoPlay
-                loop
-                style={styles.lottie}
+        </> :
+            <AnimationLottie
+                title="The specialist has not posted anything"
                 source={require("@/assets/lotties/notFound.json")}
             />
-            <Text category={"h6"}>The specialist has not posted anything</Text>
-        </View>}
-
+        }
     </Screen>
     );
 };
@@ -59,15 +56,6 @@ const styles = StyleSheet.create({
         width: WIDTH,
         borderRadius: BORDER_RADIUS,
         alignSelf: 'center'
-    },
-    lottie: {
-        height: 200,
-        width: 200
-    },
-    lottieContainer: {
-        backgroundColor: "#fff",
-        justifyContent: "center",
-        alignItems: "center",
     },
     divider: {
         marginTop: 10,

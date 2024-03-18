@@ -32,23 +32,16 @@ export const useNotifications = () => {
                         "Error",
                         "To enable Push Notifications please change your settings.",
                         [
-                            {
-                                text: "OK",
-                            },
-                            {
-                                text: "Open Settings",
-                                onPress: openSettings,
-                            },
-                        ]
+                            { text: "OK" }, { text: "Open Settings",  onPress: openSettings },
+                        ] 
                     );
-
-                if (user.allowsNotifications) setAllowsNotifications(false);
+                if (user.allowsNotifications) 
+                    setAllowsNotifications(false);
                 throw new Error("User doesn't allow for notifications");
             }
             token = await Notifications.getExpoPushTokenAsync({ projectId: Constants?.expoConfig?.extra?.eas.projectId });
             addPushToken(token.data);
             if (!user.allowsNotifications) setAllowsNotifications(true);
-            console.log(token);
         } else {
             alert('Must use physical device for Push Notifications');
         }

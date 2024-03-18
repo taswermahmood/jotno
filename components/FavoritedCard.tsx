@@ -5,7 +5,7 @@ import { theme } from "@/theme";
 import { Specialist } from '@/types/profiles/specialist';
 import { Row } from '@/components/Row';
 import { Column } from '@/components/Column';
-import { BORDER_RADIUS } from '@/constants';
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from '@/constants';
 import { camelCaseToWords } from '@/utils/handleCase';
 import { Card } from 'react-native-paper';
 import { router } from 'expo-router';
@@ -58,6 +58,7 @@ export const FavoritedCard = (
                                         <View style={{ margin: 5 }}>
                                             <Text style={{ alignSelf: "center" }} category='label'>{camelCaseToWords(item.jobName)}</Text>
                                             <FlatList
+                                                showsVerticalScrollIndicator={false}
                                                 data={item.frequencies}
                                                 keyExtractor={(item) => item.name}
                                                 renderItem={({ item }) => (
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         width: 100,
         borderColor: theme["color-primary-500"],
-        borderRadius: BORDER_RADIUS
+        borderRadius: BUTTON_BORDER_RADIUS
     },
     defaultPadding: {
         padding: 5

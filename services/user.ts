@@ -1,12 +1,10 @@
 import axios from "axios";
 
 import { endpoints } from "@/constants";
-import { User } from "@/types/user";
+import { User, UserUpdate } from "@/types/user";
 import { handleError } from "@/utils/handleError";
-import { JobPost } from "@/types/jobPost";
 
 type UserData = { data: User }
-type JobData = { data: JobPost }
 
 export const registerUser = async (
     firstName: string,
@@ -94,32 +92,35 @@ export const resetPassword = async (password: string, token: string | string[]) 
 }
 
 
-export const updateInformation = async (
-    userID: Number,
-    firstName: string,
-    lastName: string,
-    email: string,
-    avatar: string) => {
-    try {
-        const { data }: UserData = await axios.post(endpoints.updateUserInformation, {
-            userID,
-            firstName,
-            lastName,
-            email,
-            avatar
-        })
-        if (data) return data;
-        return null;
-    } catch (error) {
-        handleError(error)
-    }
-};
+export const updateInformation = (
+    userID: number,
+    userUpdate: UserUpdate,
+    accessToken: string
+) =>
+    axios.patch(
+        endpoints.updateUserInformation(userID),
+        {
+            firstName: userUpdate.firstName,
+            lastName: userUpdate.lastName,
+            email: userUpdate.email,
+            avatar: userUpdate.avatar,
+            address: userUpdate.address,
+            lat: userUpdate.lat,
+            lon: userUpdate.lon,
+            city: userUpdate.city,
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
+    );
 
 export const alterPushToken = (
     userID: number,
     op: "add" | "remove",
     pushToken: string,
-    // accessToken: string
+    accessToken: string
 ) =>
     axios.patch(
         endpoints.alterPushToken(userID),
@@ -127,26 +128,26 @@ export const alterPushToken = (
             op,
             token: pushToken,
         },
-        // {
-        //     headers: {
-        //         Authorization: `Bearer ${accessToken}`,
-        //     },
-        // }
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
     );
 
 export const alterAllowsNotifications = (
     userID: number,
     allowsNotifications: boolean,
-    // accessToken: string
+    accessToken: string
 ) =>
     axios.patch(
         endpoints.allowNotifications(userID),
         { allowsNotifications },
-        // {
-        //     headers: {
-        //         Authorization: `Bearer ${accessToken}`,
-        //     },
-        // }
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
     );
 
 

@@ -1,45 +1,48 @@
 import { Button, TabView, Text } from '@ui-kitten/components';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
-import { useLocalSearchParams } from 'expo-router';
+import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import LottieView from 'lottie-react-native';
 
 import { ScreenView } from '@/components/ScreenView';
 import { GoBackRoute } from '@/components/GoBackRoute';
 import { Screen } from "@/components/Screen";
 import { Tab } from '@ui-kitten/components';
-import { BORDER_RADIUS } from '@/constants';
+import { BUTTON_BORDER_RADIUS } from '@/constants';
 import { SpecialistHeader } from '@/components/profileDetails/Header';
 import { SpecialistBasicInfo } from '@/components/profileDetails/BasicInfo';
 import { SpecialistFeed } from '@/components/profileDetails/Feed';
 import { useSelectedSpecialistQuery } from '@/hooks/queries/useSelectedSpecialistQuery';
 import { Loading } from '@/components/Loading';
+import { useUser } from '@/hooks/useUser';
+import { AnimationLottie } from '@/components/AnimationLottie';
 
 export default function SpecialistDetailsScreen() {
+    const { user } = useUser()
+    if (!user) return <Redirect href="/" />;
+
     const { specialistID, jobName } = useLocalSearchParams();
     const [selectedIndex, setSelectedIndex] = useState(0)
     const { t } = useTranslation();
 
-    const specialist = useSelectedSpecialistQuery(Number(specialistID), jobName)
+    const specialist = useSelectedSpecialistQuery(Number(specialistID), jobName.toString())
 
     if (specialist.isFetching) return <Loading />;
 
-    if (!specialist.data )
-        return <View style={styles.lottieContainer}>
-            <LottieView
-                autoPlay
-                loop
-                style={styles.lottie}
+    if (!specialist.data)
+        return (
+            <AnimationLottie
+                title="Specialist not available, please choose another specialist"
                 source={require("@/assets/lotties/notFound.json")}
             />
-        </View>
+        )
 
     return (
         <Screen>
             <ScreenView>
                 <GoBackRoute />
                 <FlatList
+                    showsVerticalScrollIndicator={false}
                     data={[specialist.data]}
                     keyExtractor={(item) => item.ID.toString()}
                     renderItem={({ item }) => (
@@ -64,7 +67,7 @@ export default function SpecialistDetailsScreen() {
                     style={styles.button}
                     appearance='filled'
                     size='large'
-                    onPress={() => { }}
+                    onPress={() => { router.push({ pathname: "/screens/MessageSpecialist", params: { specialistId: specialistID, jobName: jobName } }) }}
                 >
                     <Text>{t("Message ")}{specialist.data.firstName}</Text>
                 </Button>
@@ -80,18 +83,8 @@ const styles = StyleSheet.create({
     button: {
         alignSelf: "center",
         width: "100%",
-        borderRadius: BORDER_RADIUS,
+        borderRadius: BUTTON_BORDER_RADIUS,
         position: "absolute",
         bottom: 20
-    },
-    lottieContainer: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "space-around"
-    },
-    lottie: {
-        height: 250,
-        width: 250
     }
 }) 

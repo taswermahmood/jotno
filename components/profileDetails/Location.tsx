@@ -39,13 +39,6 @@ const styles = StyleSheet.create({
   defaultVerticalMargin: { 
     marginVertical: 10 
     },
-  mapText: { 
-    marginLeft: 10 
-    },
-  mapHeaderContainer: { 
-    alignItems: "center", 
-    marginVertical: 15,
-    },
   mapContainer: {
     width: "100%",
     height: 200,

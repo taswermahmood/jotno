@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Review } from "@/types/profiles/review";
 import { Row } from "../Row";
 import { theme } from "@/theme";
-import { BORDER_RADIUS } from "@/constants";
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from "@/constants";
 import { getFormattedDate } from "@/utils/getFormatedDate";
 
 export const SpecialistsReview = ({
@@ -19,6 +19,16 @@ export const SpecialistsReview = ({
 }) => {
     const [showMore, setShowMore] = useState(false);
     const handleButtonPress = () => setShowMore(!showMore);
+
+    const getStarsIcons = (item: Review) => {
+        let stars = [];
+        for (let i = 0; i < item.stars; i++) {
+            stars.push(
+                <MaterialCommunityIcons key={i} name="star" size={24} color={theme["color-warning-400"]} />
+            )
+        }
+        return stars;
+    };
 
     const showReviews = (item: Review) => {
         return (
@@ -45,18 +55,9 @@ export const SpecialistsReview = ({
                 <Text category='s1' style={{ marginHorizontal: 5 }}>
                     {item.body}
                 </Text>
-            </View>)
+            </View>
+        )
     }
-
-    const getStarsIcons = (item: Review) => {
-        let stars = [];
-        for (let i = 0; i < item.stars; i++) {
-            stars.push(
-                <MaterialCommunityIcons name="star" size={24} color={theme["color-warning-400"]} />
-            )
-        }
-        return stars;
-    };
 
     const ShowButton = ({ text }: { text: string }) => (
         <Button
@@ -74,11 +75,10 @@ export const SpecialistsReview = ({
         if (reviews.length > 2 && !showMore)
             return (
                 <>
-                    {reviews.map((item, index) =>
-                        index < 2 ? (
-                            showReviews(item)
-                        ) : null
-                    )}
+                    {
+                        reviews.map((item, index) => index < 2 ?
+                            (showReviews(item)) : null)
+                    }
                     <ShowButton text="See More" />
                 </>
             );
@@ -93,7 +93,11 @@ export const SpecialistsReview = ({
         );
     };
 
-    return <View style={style}>{getList()}</View>;
+    return (
+        <View style={style}>
+            {getList()}
+        </View>
+    )
 };
 
 const styles = StyleSheet.create({
@@ -107,6 +111,7 @@ const styles = StyleSheet.create({
         marginVertical: 5
     },
     showButton: {
-        alignSelf: "flex-end"
+        alignSelf: "flex-end",
+        borderRadius: BUTTON_BORDER_RADIUS
     },
 });

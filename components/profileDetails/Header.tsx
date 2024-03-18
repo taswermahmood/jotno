@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Share, View, StyleSheet, TouchableOpacity } from "react-native";
-import { Divider, Text } from "@ui-kitten/components";
+import { Text } from "@ui-kitten/components";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 import { theme } from "@/theme";
@@ -9,13 +8,9 @@ import { Specialist } from "@/types/profiles/specialist";
 import { ImageCarousel } from "../ImageCarousel";
 import { BORDER_RADIUS } from "@/constants";
 import { Column } from "../Column";
-import { useUser } from "@/hooks/useUser";
-import { useFavoritedSpecialialistMutation } from "@/hooks/mutations/useFavoritedSpecialistMutation";
 import { FavoriteIcon } from "../FavoriteIcon";
 
 export const SpecialistHeader = ({ specialist }: { specialist: Specialist }) => {
-    const { user } = useUser();
-
     const shareItem = async () => {
         try {
             await Share.share({

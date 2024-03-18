@@ -14,7 +14,7 @@ export type Specialist = {
         lat: number;
         lon: number;
         stars: number;
-        phoneNumber?: string;
+        phoneNumber: string;
         about?: string;
         reviews?: Review[];
         verified?: boolean; 

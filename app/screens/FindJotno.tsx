@@ -1,5 +1,5 @@
 import { Text, Input } from '@ui-kitten/components';
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { FlatList, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import { useQueryClient } from 'react-query';
@@ -15,8 +15,12 @@ import { GoBackRoute } from '@/components/GoBackRoute';
 import { Screen } from "@/components/Screen";
 import { Row } from '@/components/Row';
 import { BORDER_RADIUS, queryKeys } from '@/constants';
+import { useUser } from '@/hooks/useUser';
 
 export default function FindJotnoScreen() {
+    const { user } = useUser()
+    if (!user) return <Redirect href="/" />;
+
     const { jobName } = useLocalSearchParams();
     const [value, setValue] = useState("");
     const router = useRouter();

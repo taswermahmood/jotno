@@ -1,12 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet, View } from 'react-native';
-import { Text } from '@ui-kitten/components';
+import { Platform, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { theme } from '@/theme';
-
-import { Screen } from "@/components/Screen";
 import { NavigationContainer } from '@react-navigation/native';
+
+import { theme } from '@/theme';
+import { Screen } from "@/components/Screen";
 import { JobPosts } from '@/app/screens/JobPosts';
 import { FavoritedSpecialists } from '../screens/FavoritedSpecialists';
 

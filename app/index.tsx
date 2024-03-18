@@ -18,7 +18,7 @@ export default function SignUpSignIn() {
     const { t } = useTranslation();
     const { user } = useUser()
     const { registerForPushNotificationsAsync, handleNotificationResponse } = useNotifications();
-    
+
     useEffect(() => {
         registerForPushNotificationsAsync();
         Notifications.setNotificationHandler({
@@ -40,8 +40,8 @@ export default function SignUpSignIn() {
                 <ScreenView>
                     <Image style={{ alignSelf: "center", width: 250, height: 200, margin: 50 }} source={require("@/assets/images/icon.png")} />
                     <View style={{ position: "absolute", top: "40%" }}>
-                        <Text style={{ color: theme["color-primary-900"] }} category='h1'>{t("Find the care you deserve")}</Text>
-                        <Text style={{ color: theme["color-primary-700"] }} appearance="hint" category='h5'>{t("Pet Care, Elderly Care, Teachers, Housekeeping")}</Text>
+                        <Text style={{ color: theme["color-primary-900"]}} category='h1'>{t("Find the care you deserve")}</Text>
+                        <Text style={{ color: theme["color-primary-700"]}} appearance="hint" category='h5'>{t("Pet Care, Elderly Care, Teachers, Housekeeping")}</Text>
                     </View>
                 </ScreenView>
                 <View style={styles.buttonContainer}>

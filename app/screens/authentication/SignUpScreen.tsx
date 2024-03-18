@@ -14,7 +14,7 @@ import { FacebookButton } from "@/components/FacebookButton";
 import { LoginDivider } from "@/components/LoginDivider";
 import { PasswordInput } from "@/components/PasswordInput";
 import { GoBackRoute } from "@/components/GoBackRoute";
-import { BORDER_RADIUS } from "@/constants";
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from "@/constants";
 import { PhoneInput } from "@/components/PhoneInput";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     },
     signUpButton: {
         marginTop: 20,
-        borderRadius: BORDER_RADIUS
+        borderRadius: BUTTON_BORDER_RADIUS
     },
     orContainer: {
         marginVertical: 30,

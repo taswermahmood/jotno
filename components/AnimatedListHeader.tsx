@@ -8,6 +8,7 @@ import { Row } from "./Row";
 import { Search } from "./Search";
 import { Filter } from "./Filter";
 import { MenuRoute } from "./MenuRoute";
+import { router } from "expo-router";
 
 export const AnimatedListHeader = ({
     jobName,
@@ -15,7 +16,7 @@ export const AnimatedListHeader = ({
     setShowMap,
     availableSpecialist,
     showMap }: {
-        jobName: string | string [],
+        jobName: string | string[],
         showMap: boolean,
         location: string,
         availableSpecialist?: number,
@@ -29,7 +30,7 @@ export const AnimatedListHeader = ({
     return <Animated.View style={[styles.container]}>
         <Row>
             <MenuRoute />
-            <Search jobName={jobName} location={location} style={styles.grid} />
+            <Search onPress={() => router.push({ pathname: "/screens/FindJotno", params: { jobName: jobName } })} name={location} style={styles.grid} />
             <Filter />
         </Row>
         <Divider style={{ backgroundColor: theme["color-gray"], marginTop: 10, marginBottom: 10 }}></Divider>
@@ -47,12 +48,13 @@ export const AnimatedListHeader = ({
                         </Row>
                     </TouchableOpacity>
                     :
-                    <><TouchableOpacity onPress={() => console.log("navigate sort")}>
-                        <Row>
-                            <MaterialCommunityIcons style={styles.center} name={"sort"} size={18} color={theme["color-primary-500"]} />
-                            <Text style={{ fontWeight: "bold" }} category="c1" appearance="hint"> Sort</Text>
-                        </Row>
-                    </TouchableOpacity>
+                    <>
+                        <TouchableOpacity onPress={() => console.log("navigate sort")}>
+                            <Row>
+                                <MaterialCommunityIcons style={styles.center} name={"sort"} size={18} color={theme["color-primary-500"]} />
+                                <Text style={{ fontWeight: "bold" }} category="c1" appearance="hint"> Sort</Text>
+                            </Row>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={mapToggle}>
                             <Row style={styles.marginLeft}>
                                 <MaterialCommunityIcons style={styles.center} name={"map"} size={18} color={theme["color-primary-500"]} />

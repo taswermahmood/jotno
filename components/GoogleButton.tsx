@@ -3,7 +3,7 @@ import { Text } from "@ui-kitten/components";
 import * as WebBrowser from "expo-web-browser";
 
 import { GoogleLogo } from "./logos/GoogleLogo";
-import { BORDER_RADIUS } from "@/constants";
+import { BUTTON_BORDER_RADIUS } from "@/constants";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     width: "100%",
-    borderRadius: BORDER_RADIUS,
+    borderRadius: BUTTON_BORDER_RADIUS,
     backgroundColor: "#fff",
     height: 50,
   },

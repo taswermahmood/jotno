@@ -3,20 +3,25 @@ import { Animated, Platform, StyleSheet, View } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text } from '@ui-kitten/components';
-import { router, useLocalSearchParams } from 'expo-router';
+import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import MapView from 'react-native-maps';
-import LottieView from "lottie-react-native";
 
 import { Screen } from "@/components/Screen";
 import { Card } from '@/components/SearchCard';
 import { HEADERHIGHT, LISTMARGIN } from '@/constants';
 import { AnimatedListHeader } from '@/components/AnimatedListHeader';
 import { Map } from '@/components/Map';
-import { SearchScreenParams } from '@/types/searchResultsParams';
+import { SearchScreenParams } from '@/types/params/searchResultsParams';
 import { useSearchSpecialistsQuery } from '@/hooks/queries/useSearchSpecialistsQuery';
 import { camelCaseToWords } from '@/utils/handleCase';
+import { useUser } from '@/hooks/useUser';
+import { JDivider } from '@/components/Divider';
+import { AnimationLottie } from '@/components/AnimationLottie';
 
 export default function SearchResultsScreen() {
+
+  const { user } = useUser()
+  if (!user) return <Redirect href="/" />;
 
   const { t } = useTranslation();
   const { jobName } = useLocalSearchParams();
@@ -25,6 +30,7 @@ export default function SearchResultsScreen() {
   const [showMap, setShowMap] = useState<boolean>(false)
   const mapRef = useRef<MapView | null>(null)
   const [location, setLocation] = useState<string | undefined>(undefined);
+
   const initialRegion = {
     latitude: 23.7840395,
     longitude: 90.40327833,
@@ -38,7 +44,7 @@ export default function SearchResultsScreen() {
     boundingBox = [Number(bb[0]), Number(bb[1]), Number(bb[2]), Number(bb[3])];
   }
 
-  const searchedSpecialists = useSearchSpecialistsQuery(boundingBox, jobName)
+  const searchedSpecialists = useSearchSpecialistsQuery(boundingBox, jobName.toString())
 
   useEffect(() => {
     if (route.lat) {
@@ -97,7 +103,10 @@ export default function SearchResultsScreen() {
                 data={searchedSpecialists.data}
                 keyExtractor={(item) => item.ID.toString()}
                 renderItem={({ item }) => (
-                  <Card key={item.ID} specialist={item} onPress={() => { router.push({ pathname: "/screens/SpecialistDetails", params: { specialistID: item.ID, jobName: jobName } }) }}></Card>
+                  <>
+                    <Card key={item.ID} specialist={item} jobName={jobName.toString()} onPress={() => { router.push({ pathname: "/screens/SpecialistDetails", params: { specialistID: item.ID, jobName: jobName } }) }}></Card>
+                    <JDivider />
+                  </>
                 )}
               />
             </View>
@@ -105,29 +114,20 @@ export default function SearchResultsScreen() {
             <>
               {!searchedSpecialists.isFetching ?
                 <>
-                  {route.lat ? (
-                    <View style={styles.lottieContainer}>
+                  {route.lat ?
+                    <View style={styles.container}>
                       <Text category={"h6"}>{t("No Jotno Specialist Found")}</Text>
                       <Text appearance={"hint"}>
                         {t("Please search in a different location.")}
                       </Text>
                     </View>
-                  ) : (
-                    <View style={styles.lottieContainer}>
-                      <LottieView
-                        autoPlay
-                        loop
-                        style={styles.lottie}
-                        source={require("@/assets/lotties/searchAnimation.json")}
-                      />
-                      <View style={styles.headerContainer}>
-                        <Text category={"h6"}>{t("Begin Your Search")}</Text>
-                        <Text appearance={"hint"} style={styles.subHeader}>
-                          {t("Find Jotno Specialist anytime and anywhere.")}
-                        </Text>
-                      </View>
-                    </View>
-                  )}
+                    :
+                    <AnimationLottie
+                      title="Begin Your Search"
+                      subHeader="Find Jotno Specialist anytime and anywhere."
+                      source={require("@/assets/lotties/searchAnimation.json")}
+                    />
+                  }
                 </> : null}
             </>
           }
@@ -143,22 +143,10 @@ const styles = StyleSheet.create({
   horizontalContainer: {
     marginHorizontal: LISTMARGIN,
   },
-  lottieContainer: {
+  container: {
     backgroundColor: "#fff",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  lottie: {
-    height: 250,
-    width: 250
-  },
-  headerContainer: {
-    marginHorizontal: 20,
-    alignItems: "center"
-  },
-  subHeader: {
-    marginTop: 10,
-    textAlign: "center"
   },
 });

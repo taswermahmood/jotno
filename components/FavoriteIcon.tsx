@@ -1,13 +1,11 @@
 import { StyleSheet } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { theme } from "@/theme";
-import { useRouter } from "expo-router";
 import { Specialist } from "@/types/profiles/specialist";
 import { useUser } from "@/hooks/useUser";
 import { useFavoritedSpecialialistMutation } from "@/hooks/mutations/useFavoritedSpecialistMutation";
 
 export const FavoriteIcon = ({ specialist, size }: { specialist: Specialist; size: number }) => {
-    const router = useRouter();
     const { user, setFavoritedSpecialists } = useUser();
     const favoritedSpecialist = useFavoritedSpecialialistMutation();
 
@@ -15,8 +13,8 @@ export const FavoriteIcon = ({ specialist, size }: { specialist: Specialist; siz
         specialistID: number,
         type: "add" | "remove"
     ) => {
-        let favorties: number[] = user?.favorites
-            ? [...user.favorites]
+        let favorties: number[] = user?.favorited
+            ? [...user.favorited]
             : [];
 
         if (type === "add") favorties.push(specialistID);
@@ -28,11 +26,11 @@ export const FavoriteIcon = ({ specialist, size }: { specialist: Specialist; siz
         let op: "add" | "remove" = "add";
         if (specialist?.favorited) op = "remove";
         alterUsersFavorites(specialist.ID, op);
-        favoritedSpecialist.mutate({ specialistID: specialist.ID, op });
+        favoritedSpecialist.mutate({ specialistID: specialist.ID, op});
     };
     return <MaterialCommunityIcons
         onPress={() => { handleHeartPress() }}
-        name={specialist.favorited ? "heart" : "heart-outline"}
+        name={specialist?.favorited ? "heart" : "heart-outline"}
         size={size}
         color={theme["color-primary-500"]}
     />

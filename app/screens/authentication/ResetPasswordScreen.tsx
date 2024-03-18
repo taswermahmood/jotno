@@ -11,7 +11,7 @@ import { Screen } from "@/components/Screen";
 import { ScreenView } from "@/components/ScreenView";
 import { PasswordInput } from "@/components/PasswordInput";
 import { GoBackRoute } from "@/components/GoBackRoute";
-import { BORDER_RADIUS, endpoints } from "@/constants";
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from "@/constants";
 import { useLoading } from "@/hooks/useLoading";
 import { resetPassword } from "@/services/user";
 
@@ -120,6 +120,6 @@ const styles = StyleSheet.create({
     },
     submitButton: {
         marginTop: 20,
-        borderRadius: BORDER_RADIUS
+        borderRadius: BUTTON_BORDER_RADIUS
     },
 });

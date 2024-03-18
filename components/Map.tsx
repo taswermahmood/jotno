@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { MapMarker } from "./MapMarker";
 import { useEffect, useState } from "react";
-import { router, useNavigation } from "expo-router";
+import { router } from "expo-router";
 import { Modal } from "react-native-paper";
 import { Button } from "@ui-kitten/components";
 import MapView, { Region, PROVIDER_GOOGLE } from "react-native-maps";
@@ -39,7 +39,7 @@ export const Map = ({
     const [region, setRegion] = useState<Region | undefined>(mapRegion ? mapRegion : undefined);
     const [showSearchAreaButton, setShowSearchAreaButton] = useState(false)
 
-    const searchedSpecialists = useSearchSpecialistsQuery(boundingBox, jobName);
+    const searchedSpecialists = useSearchSpecialistsQuery(boundingBox, jobName.toString());
 
     useEffect(() => {
         if (location === "Map Area") return;
@@ -97,8 +97,10 @@ export const Map = ({
                 ref={mapRef}
                 provider={PROVIDER_GOOGLE}
                 onPress={handleMapPress}
-                showsUserLocation={true}
+                showsUserLocation
+                showsMyLocationButton
                 region={region}
+                initialRegion={region}
                 onRegionChangeComplete={(region, isGesture) => {
                     if (isGesture?.isGesture) {
                         if (!showSearchAreaButton) setShowSearchAreaButton(true);
@@ -126,6 +128,7 @@ export const Map = ({
             {activeIndex > -1 && (
                 <Modal visible={showModal} onDismiss={unFocusProperty} contentContainerStyle={styles.card}>
                     <Card
+                        jobName={jobName.toString()}
                         specialist={specialists[activeIndex]}
                         onPress={() => { router.push({ pathname: "/screens/SpecialistDetails", params: { specialistID: specialists[activeIndex].ID, jobName: jobName } }) }}
                     />

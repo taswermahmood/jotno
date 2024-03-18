@@ -13,7 +13,7 @@ import { GoogleButton } from "@/components/GoogleButton";
 import { FacebookButton } from "@/components/FacebookButton";
 import { GoBackRoute } from "@/components/GoBackRoute";
 import { PasswordInput } from "@/components/PasswordInput";
-import { BORDER_RADIUS } from "@/constants";
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from "@/constants";
 import { useAuth } from "@/hooks/useAuth";
 
 
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         borderRadius: BORDER_RADIUS
     },
     forgotPasswordContainer: { alignItems: "center", marginTop: 5 },
-    signInButton: { marginTop: 20, borderRadius: BORDER_RADIUS },
+    signInButton: { marginTop: 20, borderRadius: BUTTON_BORDER_RADIUS },
     orContainer: {
         marginVertical: 30,
     },

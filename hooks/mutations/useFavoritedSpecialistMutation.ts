@@ -8,12 +8,14 @@ const favoriteOrUnfavoriteSpecialist = (
     specialistID: number,
     op: "add" | "remove",
     userID?: number,
+    token?: string
 ) =>
     axios.patch(
-        `${endpoints.alterFavorites(userID as number)}`,
+        `${endpoints.alterFavorites(userID as number)}`, { specialistID, op },
         {
-            specialistID,
-            op,
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
         }
     );
 
@@ -22,7 +24,7 @@ export const useFavoritedSpecialialistMutation = () => {
     const queryClient = useQueryClient();
     return useMutation(
         ({ specialistID, op }: { specialistID: number; op: "add" | "remove" }) =>
-            favoriteOrUnfavoriteSpecialist(specialistID, op, user?.ID),
+            favoriteOrUnfavoriteSpecialist(specialistID, op, user?.ID, user?.accessToken),
         {
             onMutate: async ({ specialistID, op }) => {
                 await queryClient.cancelQueries(queryKeys.favorited);

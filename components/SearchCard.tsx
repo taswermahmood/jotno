@@ -5,18 +5,21 @@ import { theme } from "@/theme";
 import { Specialist } from '@/types/profiles/specialist';
 import { Row } from '@/components/Row';
 import { Column } from '@/components/Column';
-import { BORDER_RADIUS } from '@/constants';
+import { BORDER_RADIUS, BUTTON_BORDER_RADIUS } from '@/constants';
 import { camelCaseToWords } from '@/utils/handleCase';
 import { FavoriteIcon } from './FavoriteIcon';
+import { router } from 'expo-router';
 
 export const Card = (
   {
     specialist,
+    jobName,
     style,
     onPress,
   }:
     {
       specialist: Specialist,
+      jobName: string,
       style?: ViewStyle,
       onPress?: () => void
     }
@@ -46,7 +49,7 @@ export const Card = (
             style={styles.button}
             appearance='filled'
             size='small'
-            onPress={onPress}
+            onPress={() => router.push({ pathname: "/screens/MessageSpecialist", params: { specialistId: specialist.ID, jobName: jobName }}) }
           >
             Contact
           </Button>
@@ -62,7 +65,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 100,
     borderColor: theme["color-primary-500"],
-    borderRadius: BORDER_RADIUS
+    borderRadius: BUTTON_BORDER_RADIUS
   },
   defaultPadding: {
     padding: 5
@@ -75,12 +78,7 @@ const styles = StyleSheet.create({
   },
   container: {
     borderRadius: BORDER_RADIUS,
-    marginVertical: 5,
-    padding: 5,
     width: "100%",
-    backgroundColor: "#fff",
-    borderColor: theme["color-primary-300"],
-    borderBottomWidth: 1
   },
   divider: {
     marginTop: 2,

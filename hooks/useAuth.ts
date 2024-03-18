@@ -1,10 +1,12 @@
 import * as Facebook from "expo-auth-session/providers/facebook";
 import * as Google from "expo-auth-session/providers/google";
+
 import { useUser } from "./useUser";
 import { useLoading } from "./useLoading";
 import { router } from "expo-router";
 import { User } from "@/types/user";
 import { facebookLoginRegister, googleLoginRegister, loginUser, registerUser } from "@/services/user";
+import { useEffect } from "react";
 
 export const useAuth = () => {
 
@@ -12,16 +14,34 @@ export const useAuth = () => {
     const { setLoading } = useLoading();
 
     const [__, ___, fbPromtAsync] = Facebook.useAuthRequest({ clientId: "376557685324796" });
-    const [_, googleResponse, googleAuthAsync] = Google.useAuthRequest({
+    const [_, googleResponse, googleAuth] = Google.useAuthRequest({
         expoClientId:
             "798634518659-dvr083qo5f16396gncnflha1sq9v065g.apps.googleusercontent.com",
         iosClientId:
-            "1080382822276-a0ms51p5cfc523bivhchs8nk04u2scq0.apps.googleusercontent.com",
+            "798634518659-pe6mqtfhvqctvinpohtivkgm644q382r.apps.googleusercontent.com",
         androidClientId:
-            "1080382822276-dqohv9donltabnijor1uun2765hstr4v.apps.googleusercontent.com",
+            "798634518659-nebdh1h0jeu1an2cq7ol834kgfoqm4og.apps.googleusercontent.com",
         webClientId: "GOOGLE_GUID.apps.googleusercontent.com",
         selectAccount: true,
     });
+
+    useEffect(() => {
+        async function googleAuthLogin(accessToken: string) {
+            try {
+                setLoading(true)
+                const user = await googleLoginRegister(accessToken);
+                handleSignInUser(user);
+            } catch (error) {
+                handleAuthErrors();
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (googleResponse?.type == "success") {
+            const { accessToken } = googleResponse.params
+            googleAuthLogin(accessToken);
+        }
+    }, [googleResponse])
 
     const handleSignInUser = (user?: User | null) => {
         if (user) {
@@ -79,20 +99,5 @@ export const useAuth = () => {
         }
     }
 
-    const googleAuth = async () => {
-        try {
-            const response = await googleAuthAsync();
-            if (response.type === "success") {
-                setLoading(true)
-                const { accessToken } = response.params;
-                const user = await googleLoginRegister(accessToken);
-                handleSignInUser(user);
-            }
-        } catch (error) {
-            handleAuthErrors();
-        } finally {
-            setLoading(false)
-        }
-    }
     return { nativeRegister, nativeLogin, googleAuth, facebookAuth }
 }

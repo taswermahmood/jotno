@@ -14,9 +14,9 @@ const fetchSpecialists = async (
     const response = await axios.get(
         endpoints.getFavorites(userID),
         {
-            //   headers: {
-            //     Authorization: `Bearer ${token}`,
-            //   },
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
         }
     );
 
@@ -30,7 +30,7 @@ export const useFavoritedSpecialistQuery = () => {
 
     return useQuery(
         queryKeys.favorited,
-        () => fetchSpecialists(user?.ID),
+        () => fetchSpecialists(user?.ID, user?.accessToken),
         {
             retry: false,
         }
