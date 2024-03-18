@@ -1,7 +1,6 @@
 import { View, StyleSheet, FlatList } from "react-native";
 
 import { useUser } from "@/hooks/useUser";
-import { theme } from "@/theme";
 import { useFavoritedSpecialistQuery } from "@/hooks/queries/useFavoritedSpecialistQuery";
 import { Loading } from "@/components/Loading";
 import { Screen } from "@/components/Screen";
@@ -19,10 +18,8 @@ export const FavoritedSpecialists = () => {
 
     useEffect(() => {
         if (
-            (!favoritedSpecialists.data || favoritedSpecialists.data.length === 0) &&
-            user &&
-            user?.favorited &&
-            user.favorited.length > 0
+            (!favoritedSpecialists.data || favoritedSpecialists.data.length === 0) 
+            && user && user?.favorited && user.favorited.length > 0
         ) favoritedSpecialists.refetch();
 
     }, []);

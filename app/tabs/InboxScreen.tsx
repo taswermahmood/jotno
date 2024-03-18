@@ -41,23 +41,23 @@ export default function InboxScreen() {
   return (
     <Screen>
       <FlatList
+        style={styles.message}
         showsVerticalScrollIndicator={false}
         data={chats.data}
         keyExtractor={(item) => item.ID.toString()}
         renderItem={({ item }) => (
           <Pressable
-            style={styles.message}
             onPress={() => { handleMessagePress(item.ID, item.recipientName, item.jobName) }}
           >
             <Row>
               <Avatar.Image style={{ alignSelf: "center" }} size={50} source={{ uri: item.avatar }} />
               <Column style={{ margin: 10 }}>
                 <Text style={{ color: theme["color-primary-500"] }} category="label">{camelCaseToWords(item.jobName)}</Text>
+                <Text style={styles.messageTitle} numberOfLines={1}>{item.recipientName}</Text>
                 <Row style={{ justifyContent: "space-between" }}>
-                  <Text style={styles.messageTitle} numberOfLines={1}>{item.recipientName}</Text>
-                  <Text style={{ alignItems: "flex-end", width: "33%" }} appearance="hint">{getFormattedDate(item.messages[0].CreatedAt)}</Text>
+                  <Text style={{ alignItems: "flex-start", width: "58%" }} numberOfLines={1} appearance="hint">{item.messages[0].text}</Text>
+                  <Text style={{ alignItems: "flex-end"}} appearance="hint">{getFormattedDate(item.messages[0].CreatedAt)}</Text>
                 </Row>
-                <Text style={{ alignItems: "flex-start", width: "75%" }} numberOfLines={1} appearance="hint">{item.messages[0].text}</Text>
               </Column>
             </Row>
           </Pressable>
@@ -69,14 +69,12 @@ export default function InboxScreen() {
 
 const styles = StyleSheet.create({
   message: {
-    justifyContent: "center",
     height: 100,
     width: "100%",
-    paddingHorizontal: 20,
+    marginHorizontal: 20,
     backgroundColor: "white",
   },
   messageTitle: {
-    fontWeight: "bold",
-    width: "50%"
+    fontWeight: "bold"
   }
 });

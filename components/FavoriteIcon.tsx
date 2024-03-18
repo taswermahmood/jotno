@@ -13,20 +13,27 @@ export const FavoriteIcon = ({ specialist, size }: { specialist: Specialist; siz
         specialistID: number,
         type: "add" | "remove"
     ) => {
-        let favorties: number[] = user?.favorited
-            ? [...user.favorited]
-            : [];
+        if (user) {
+            let favorties: number[] | undefined = user.favorited
+                ? [...user.favorited]
+                : [];
 
-        if (type === "add") favorties.push(specialistID);
-        else favorties = favorties.filter((i) => i !== specialistID);
-
-        setFavoritedSpecialists(favorties);
+            if (type === "add") {
+                favorties.push(specialistID);
+                user.favorited = favorties
+            }
+            else {
+                favorties = favorties.filter((i) => i !== specialistID)
+                user.favorited = favorties
+            }
+            setFavoritedSpecialists(favorties);
+        }
     };
     const handleHeartPress = () => {
         let op: "add" | "remove" = "add";
         if (specialist?.favorited) op = "remove";
         alterUsersFavorites(specialist.ID, op);
-        favoritedSpecialist.mutate({ specialistID: specialist.ID, op});
+        favoritedSpecialist.mutate({ specialistID: specialist.ID, op });
     };
     return <MaterialCommunityIcons
         onPress={() => { handleHeartPress() }}
@@ -37,8 +44,4 @@ export const FavoriteIcon = ({ specialist, size }: { specialist: Specialist; siz
 }
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 5,
-        alignSelf: "center"
-    },
 })

@@ -11,7 +11,7 @@ export type User = {
     city?: string,
     lat?: number,
     lon?: number,
-    favorited: number[] | null;
+    favorited?: number[];
     allowsNotifications: boolean;
     pushToken?: string;
     sessionID?: string;
